@@ -32,11 +32,11 @@ public class SchedulerService {
      * 매칭 성공 1시간이 경과한 경우, 두 사용자에게 매너평가 시스템 메시지 전송
      */
     @Transactional
-    @Scheduled(fixedRate = 5 * 60 * 1000) // 5 * 60초 주기로 실행
+    @Scheduled(fixedRate = 60 * 60 * 1000) // 60 * 60초 주기로 실행
     public void mannerSystemMessageRun() {
 //        log.info("scheduler start");
 
-        // 매칭 성공 1분이 경과된 matchingRecord 엔티티 조회 (실제로는 60분으로 해야함)
+        // 매칭 성공 1시간이 경과된 matchingRecord 엔티티 조회
         LocalDateTime updatedTime = LocalDateTime.now().minusSeconds(MANNER_MESSAGE_TIME);
         List<MatchingRecord> matchingRecordList = matchingRecordRepository.findByStatusAndMannerMessageSentAndUpdatedAtBefore(
             MatchingStatus.SUCCESS, false, updatedTime);
