@@ -108,6 +108,8 @@ public class SchedulerService {
 //    @Scheduled(cron = "0 0 7 * * *")
     @Scheduled(fixedRate = 5 * 60 * 1000) // 5 * 60초 주기로 실행
     public void updateAllUserRiotInformation(){
+        memberChampionRepository.deleteAllInBatch();
+
         memberRepository.findAll().forEach(member -> {
             String gameName = member.getGameName();
             String tag = member.getTag();
@@ -209,7 +211,6 @@ public class SchedulerService {
 
             memberRepository.save(member);
             System.out.println(member.getTier()+" "+member.getRank());
-            int i=0;
         });
 
     }
