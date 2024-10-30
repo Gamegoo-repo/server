@@ -13,10 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -203,11 +200,7 @@ public class RiotUtil {
         String matchUrl = String.format(RIOT_MATCH_API_URL_TEMPLATE, puuid, count, riotAPIKey);
         String[] matchIds = restTemplate.getForObject(matchUrl, String[].class);
 
-        if (matchIds == null || matchIds.length == 0) {
-
-        }
-
-        return Arrays.asList(matchIds);
+        return Arrays.asList(Objects.requireNonNull(matchIds));
     }
 
 

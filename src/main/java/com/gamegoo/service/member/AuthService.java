@@ -86,12 +86,29 @@ public class AuthService {
             .isAgree(isAgree)
             .build();
 
+        getRiotInformation(gameName, tag, puuid, member);
+
+        // 회원가입 완료된 사용자 정보 로그로 출력
+        log.info("회원가입 완료 - 이메일: {}, 프로필 이미지: {}, 소환사명: {}, 태그: {}, 티어: {}, 랭크: {}",
+            member.getEmail(), member.getProfileImage(), member.getGameName(), member.getTag(),
+            member.getTier(), member.getRank());
+
+        return member;
+    }
+
+    /**
+     * Riot 정보를 가져오는 메소드
+     * @param gameName
+     * @param tag
+     * @param puuid
+     * @param member
+     */
+    public void getRiotInformation(String gameName, String tag, String puuid, Member member) {
         // 2. tier, rank, winrate 저장
         String encryptedSummonerId = riotUtil.getSummonerId(puuid);
         riotUtil.addTierRankWinRate(member, gameName, encryptedSummonerId, tag);
 
         memberRepository.save(member);
-
 
         // 최근 선호 챔피언 3개 리스트 조회
         List<Integer> top3Champions = null;
@@ -118,13 +135,6 @@ public class AuthService {
                     });
 
         }
-
-        // 회원가입 완료된 사용자 정보 로그로 출력
-        log.info("회원가입 완료 - 이메일: {}, 프로필 이미지: {}, 소환사명: {}, 태그: {}, 티어: {}, 랭크: {}",
-            member.getEmail(), member.getProfileImage(), member.getGameName(), member.getTag(),
-            member.getTier(), member.getRank());
-
-        return member;
     }
 
     /**
