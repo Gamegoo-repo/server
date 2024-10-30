@@ -29,6 +29,14 @@ public class RiotService {
             throw new MemberHandler(ErrorStatus.RIOT_NOT_FOUND);
         }
 
+        String summonerId = riotUtil.getSummonerId(riotPuuid);
+
+        if (summonerId == null) {
+            throw new MemberHandler(ErrorStatus.RIOT_NOT_FOUND);
+        }
+
+
+
         return riotPuuid;
     }
 
