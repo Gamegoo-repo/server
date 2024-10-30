@@ -21,16 +21,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.gamegoo.util.RiotUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -192,10 +188,7 @@ public class SchedulerService {
                         .toList();
 
 
-
                 // 5. DB에 저장
-                System.out.println(member.getTier()+" "+member.getRank());
-
                 if (top3Champions != null) {
                     top3Champions
                             .forEach(championId -> {
@@ -210,14 +203,13 @@ public class SchedulerService {
                             });
                 }
 
-
             } catch (Exception e) {
                 log.warn("Riot 업데이트 - 라이엇 정보 연동에 문제 발생 : ",e);
             }
 
             memberRepository.save(member);
             System.out.println(member.getTier()+" "+member.getRank());
-
+            int i=0;
         });
 
     }
