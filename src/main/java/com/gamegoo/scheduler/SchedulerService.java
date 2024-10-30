@@ -104,18 +104,19 @@ public class SchedulerService {
     /**
      * 07:00 모든 사용자 정보 업데이트
      */
-//    @Transactional
-//    @Scheduled(cron = "0 0 7 * * *")
-    @Scheduled(fixedRate = 5 * 60 * 1000) // 5 * 60초 주기로 실행
+    @Scheduled(cron = "0 0 7 * * *")
     public void updateAllUserRiotInformation(){
+        log.info("Riot 업데이트 - 시작");
+
         memberChampionRepository.deleteAllInBatch();
 
         memberRepository.findAll().forEach(member -> {
             String gameName = member.getGameName();
             String tag = member.getTag();
-            System.out.println(gameName);
-            System.out.println(member.getTier()+" "+member.getRank());
 
+            if(gameName.equals("SYSTEM")){
+                return;
+            }
             try {
                 // 1. puuid 조회
                 String url = String.format(RIOT_ACCOUNT_API_URL_TEMPLATE, gameName, tag, riotAPIKey);
@@ -210,9 +211,8 @@ public class SchedulerService {
             }
 
             memberRepository.save(member);
-            System.out.println(member.getTier()+" "+member.getRank());
         });
-
+        log.info("Riot 업데이트 - 완료");
     }
 
     public Integer getChampionIdFromMatch(String matchId, String gameName) {
