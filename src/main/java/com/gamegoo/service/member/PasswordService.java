@@ -34,14 +34,22 @@ public class PasswordService {
      * @param userId
      * @param newPassword
      */
-    public void updatePassword(Long userId, String newPassword) {
+    public void updatePassword(Long userId, String oldPassword, String newPassword) {
         // jwt 토큰으로 멤버 찾기
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 비밀번호 재설정
-        member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
-        memberRepository.save(member);
+        boolean matches = bCryptPasswordEncoder.matches(oldPassword, member.getPassword());
+
+        if (matches) {
+            // 비밀번호 재설정
+            member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+            memberRepository.save(member);
+        }else{
+            throw new MemberHandler(ErrorStatus.PASSWORD_INVALID);
+        }
+
+
     }
 
     /**
@@ -50,14 +58,19 @@ public class PasswordService {
      * @param email
      * @param newPassword
      */
-    public void updatePasswordWithEmail(String email, String newPassword) {
+    public void updatePasswordWithEmail(String email, String oldPassword, String newPassword) {
         // jwt 토큰으로 멤버 찾기
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 비밀번호 재설정
-        member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
-        memberRepository.save(member);
+
+        if (bCryptPasswordEncoder.matches(oldPassword,member.getPassword())) {
+            // 비밀번호 재설정
+            member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+            memberRepository.save(member);
+        }else{
+            throw new MemberHandler(ErrorStatus.PASSWORD_INVALID);
+        }
     }
 
 }

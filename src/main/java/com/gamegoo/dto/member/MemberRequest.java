@@ -55,6 +55,15 @@ public class MemberRequest {
 
     @Getter
     public static class PasswordRequestJWTDTO {
+        @NotBlank(message = "newPassword는 비워둘 수 없습니다.")
+        String newPassword;
+        @NotBlank(message = "oldPassword는 비워둘 수 없습니다.")
+        String oldPassword;
+
+    }
+
+    @Getter
+    public static class PasswordCheckRequestDTO {
         @NotBlank(message = "password는 비워둘 수 없습니다.")
         String password;
 
@@ -65,8 +74,10 @@ public class MemberRequest {
         @Email(message = "Email 형식이 올바르지 않습니다.")
         @NotBlank(message = "Email은 비워둘 수 없습니다.")
         String email;
-        @NotBlank(message = "password는 비워둘 수 없습니다.")
-        String password;
+        @NotBlank(message = "newPassword는 비워둘 수 없습니다.")
+        String newPassword;
+        @NotBlank(message = "oldPassword는 비워둘 수 없습니다.")
+        String oldPassword;
 
     }
 
