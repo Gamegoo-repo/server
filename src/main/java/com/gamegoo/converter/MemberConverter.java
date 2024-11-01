@@ -150,7 +150,6 @@ public class MemberConverter {
         return MemberResponse.memberProfileDTO.builder()
             .id(targetMember.getId())
             .mike(targetMember.getMike())
-            .email(targetMember.getEmail())
             .gameName(targetMember.getGameName())
             .tag(targetMember.getTag())
             .tier(targetMember.getTier())
