@@ -74,10 +74,6 @@ public class MemberRequest {
         @Email(message = "Email 형식이 올바르지 않습니다.")
         @NotBlank(message = "Email은 비워둘 수 없습니다.")
         String email;
-        @NotBlank(message = "newPassword는 비워둘 수 없습니다.")
-        String newPassword;
-        @NotBlank(message = "oldPassword는 비워둘 수 없습니다.")
-        String oldPassword;
 
     }
 

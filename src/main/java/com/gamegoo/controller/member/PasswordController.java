@@ -55,7 +55,7 @@ public class PasswordController {
     public ApiResponse<String> resetPassword(
             @Valid @RequestBody MemberRequest.PasswordRequestDTO passwordRequestDTO) {
 
-        passwordService.updatePasswordWithEmail(passwordRequestDTO.getEmail(), passwordRequestDTO.getOldPassword(), passwordRequestDTO.getNewPassword());
+        passwordService.updatePasswordWithEmail(passwordRequestDTO.getEmail());
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
