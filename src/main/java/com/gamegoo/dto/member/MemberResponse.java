@@ -142,7 +142,6 @@ public class MemberResponse {
         Long id;
         Integer profileImg;
         Boolean mike;
-        String email;
         String gameName;
         String tag;
         Tier tier;

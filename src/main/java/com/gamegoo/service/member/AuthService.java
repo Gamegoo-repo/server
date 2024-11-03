@@ -175,10 +175,10 @@ public class AuthService {
      * @param email
      */
     @Transactional
-    public void sendEmail(String email) {
+    public void sendEmailVerification(String email) {
 
         // 랜덤 코드 생성하기
-        String certificationNumber = CodeGeneratorUtil.generateRandomCode();
+        String certificationNumber = CodeGeneratorUtil.generateEmailRandomCode();
 
         // 메일 전송하기
         sendEmailInternal(email, certificationNumber);
@@ -256,7 +256,7 @@ public class AuthService {
      * @param email
      * @param certificationNumber
      */
-    private void sendEmailInternal(String email, String certificationNumber) {
+    public void sendEmailInternal(String email, String certificationNumber) {
         try {
             log.info("Starting email send process for email: {}, certificationNumber: {}", email,
                 certificationNumber);

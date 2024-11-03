@@ -27,11 +27,11 @@ public class PasswordController {
     @PostMapping("/check")
     @Operation(summary = "JWT 토큰이 필요한 비밀번호 확인 API 입니다.", description = "API for checking password with JWT")
     public ApiResponse<String> checkPasswordWithJWT(
-            @Valid @RequestBody MemberRequest.PasswordRequestJWTDTO passwordRequestDTO) {
+            @Valid @RequestBody MemberRequest.PasswordCheckRequestDTO passwordCheckRequestDTO) {
         Long currentUserId = JWTUtil.getCurrentUserId(); //헤더에 있는 jwt 토큰에서 id를 가져오는 코드
 
         boolean isPasswordValid = passwordService.checkPasswordById(currentUserId,
-                passwordRequestDTO.getPassword()); //request body에 있는 password와 currentUserId를 전달
+                passwordCheckRequestDTO.getPassword()); //request body에 있는 password와 currentUserId를 전달
 
         if (isPasswordValid) {
             return ApiResponse.onSuccess("비밀번호가 일치합니다.");
@@ -45,7 +45,7 @@ public class PasswordController {
     public ApiResponse<String> resetPasswordWithJWT(
             @Valid @RequestBody MemberRequest.PasswordRequestJWTDTO passwordRequestDTO) {
         Long currentUserId = JWTUtil.getCurrentUserId();
-        passwordService.updatePassword(currentUserId, passwordRequestDTO.getPassword());
+        passwordService.updatePassword(currentUserId, passwordRequestDTO.getOldPassword(), passwordRequestDTO.getNewPassword());
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
@@ -55,7 +55,7 @@ public class PasswordController {
     public ApiResponse<String> resetPassword(
             @Valid @RequestBody MemberRequest.PasswordRequestDTO passwordRequestDTO) {
 
-        passwordService.updatePasswordWithEmail(passwordRequestDTO.getEmail(), passwordRequestDTO.getPassword());
+        passwordService.updatePasswordWithEmail(passwordRequestDTO.getEmail());
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
