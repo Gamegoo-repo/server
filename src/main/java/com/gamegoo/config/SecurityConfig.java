@@ -7,6 +7,7 @@ import com.gamegoo.filter.JWTFilter;
 import com.gamegoo.filter.LoggingFilter;
 import com.gamegoo.filter.LoginFilter;
 import com.gamegoo.repository.member.MemberRepository;
+import com.gamegoo.repository.member.RefreshTokenRepository;
 import com.gamegoo.security.CustomUserDetailService;
 import com.gamegoo.util.JWTUtil;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomUserDetailService customUserDetailService;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
@@ -80,7 +82,7 @@ public class SecurityConfig {
             .addFilterAfter(new LoggingFilter(jwtUtil), JWTExceptionHandlerFilter.class)
             .addFilterAt(
                 new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
-                    memberRepository), UsernamePasswordAuthenticationFilter.class)
+                    memberRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtFilter(), LoginFilter.class)
             .sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

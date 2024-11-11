@@ -7,11 +7,9 @@ import com.gamegoo.domain.champion.Champion;
 import com.gamegoo.domain.champion.MemberChampion;
 import com.gamegoo.domain.member.LoginType;
 import com.gamegoo.domain.member.Member;
+import com.gamegoo.domain.member.RefreshToken;
 import com.gamegoo.dto.member.MemberResponse;
-import com.gamegoo.repository.member.ChampionRepository;
-import com.gamegoo.repository.member.EmailVerifyRecordRepository;
-import com.gamegoo.repository.member.MemberChampionRepository;
-import com.gamegoo.repository.member.MemberRepository;
+import com.gamegoo.repository.member.*;
 import com.gamegoo.util.CodeGeneratorUtil;
 import com.gamegoo.util.JWTUtil;
 import com.gamegoo.util.RiotUtil;
@@ -39,6 +37,7 @@ public class AuthService {
     private final ChampionRepository championRepository;
     private final MemberChampionRepository memberChampionRepository;
     private final EmailVerifyRecordRepository emailVerifyRecordRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
     private final JWTUtil jwtUtil;
@@ -201,8 +200,10 @@ public class AuthService {
     @Transactional
     public MemberResponse.RefreshTokenResponseDTO verifyRefreshToken(String refresh_token) {
         // refresh Token 검증하기
-        Member member = memberRepository.findByRefreshToken(refresh_token)
-            .orElseThrow(() -> new MemberHandler(ErrorStatus.REFRESHTOKEN_NULL));
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(refresh_token)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.REFRESHTOKEN_NULL));
+
+        Member member = refreshToken.getMember();
 
         // refresh 토큰에서 id 가져오기
         Long id = member.getId();
@@ -212,8 +213,8 @@ public class AuthService {
         String new_refresh_token = jwtUtil.createJwt(60 * 60 * 24 * 30 * 1000L);    // 30일
 
         // refresh token 저장하기
-        member.updateRefreshToken(new_refresh_token);
-        memberRepository.save(member);
+        refreshToken.updateRefreshToken(new_refresh_token);
+        refreshTokenRepository.save(refreshToken);
 
         return new MemberResponse.RefreshTokenResponseDTO(id, access_token, new_refresh_token);
     }
@@ -442,8 +443,10 @@ public class AuthService {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        member.updateRefreshToken(null);
-        memberRepository.save(member);
+        RefreshToken refreshToken = refreshTokenRepository.findByMember(member)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.REFRESHTOKEN_NULL));
+
+        refreshTokenRepository.delete(refreshToken);
     }
 
 

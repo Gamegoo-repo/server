@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamegoo.apiPayload.ApiResponse;
 import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import com.gamegoo.domain.member.Member;
+import com.gamegoo.domain.member.RefreshToken;
 import com.gamegoo.dto.member.MemberResponse;
 import com.gamegoo.repository.member.MemberRepository;
+import com.gamegoo.repository.member.RefreshTokenRepository;
 import com.gamegoo.security.CustomUserDetails;
 import com.gamegoo.util.JWTUtil;
 import java.io.IOException;
@@ -31,12 +33,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-        MemberRepository memberRepository) {
+                       MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.memberRepository = memberRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.setRequiresAuthenticationRequestMatcher(
             new AntPathRequestMatcher("/v1/member/login", "POST"));
         this.setUsernameParameter("email");
@@ -77,11 +81,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access_token = jwtUtil.createJwtWithId(id, 60 * 60 * 1000L);     // 1시간
         String refresh_token = jwtUtil.createJwt(60 * 60 * 24 * 30 * 1000L);    // 30일
 
-        // refresh token DB에 저장하기
         Member member = memberRepository.findById(id)
-            .orElseThrow();
-        member.updateRefreshToken(refresh_token);
-        memberRepository.save(member);
+                .orElseThrow();
+
+        // 이전에 있던 refreshToken 전부 지우기
+        refreshTokenRepository.findByMember(member).stream()
+                .forEach(refreshTokenRepository::delete);
+
+        // refresh token DB에 저장하기
+        RefreshToken newRefreshToken = RefreshToken.builder()
+                .member(member)
+                .refreshToken(refresh_token)
+                .build();
+
+        refreshTokenRepository.save(newRefreshToken);
 
         // 해당 유저 이름 불러오기
         String gameuserName = member.getGameName();

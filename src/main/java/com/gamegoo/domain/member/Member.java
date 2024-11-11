@@ -77,9 +77,6 @@ public class Member extends BaseDateTimeEntity {
     @Column(name = "want_position")
     private Integer wantPosition = 0;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
     @Column(name = "mike")
     private Boolean mike = false;
 
@@ -162,10 +159,6 @@ public class Member extends BaseDateTimeEntity {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public void setMannerScore(int mannerScore) { this.mannerScore = mannerScore; }
