@@ -67,8 +67,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> rank = createNumber("rank", Integer.class);
 
-    public final StringPath refreshToken = createString("refreshToken");
-
     public final ListPath<com.gamegoo.domain.report.Report, com.gamegoo.domain.report.QReport> reportList = this.<com.gamegoo.domain.report.Report, com.gamegoo.domain.report.QReport>createList("reportList", com.gamegoo.domain.report.Report.class, com.gamegoo.domain.report.QReport.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> subPosition = createNumber("subPosition", Integer.class);

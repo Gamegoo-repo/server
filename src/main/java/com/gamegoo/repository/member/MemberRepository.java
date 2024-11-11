@@ -16,8 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findById(Long id);
 
-    Optional<Member> findByRefreshToken(String refresh_token);
-
     @Query("SELECT m FROM Member m INNER JOIN Block b ON m.id = b.blockedMember.id WHERE b.blockerMember.id = :blockerId AND b.isDeleted = false ORDER BY b.createdAt DESC")
     Page<Member> findBlockedMembersByBlockerIdAndNotDeleted(@Param("blockerId") Long blockerId,
         Pageable pageable);
