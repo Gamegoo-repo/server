@@ -191,6 +191,7 @@ public class ChatServiceTest {
             .boardGameStyles(new ArrayList<>())
             .content("content")
             .boardProfileImage(1)
+                .deleted(false)
             .build();
         member2Board.setMember(member2);
         member2Board = boardRepository.save(member2Board);
@@ -319,7 +320,7 @@ public class ChatServiceTest {
             @DisplayName("4. 동일한 회원 id로 요청한 경우")
             public void startChatroomByMemberIdFailsWhenMemberIdsAreSame() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_MEMBER_ID_INVALID;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_TARGET_USER_IS_SELF;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -335,7 +336,7 @@ public class ChatServiceTest {
             @DisplayName("5. 채팅 대상 회원이 존재하지 않는 경우")
             public void startChatroomByMemberIdFailsWhenMemberNotExists() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_NOT_FOUND;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_NOT_FOUND;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -351,7 +352,7 @@ public class ChatServiceTest {
             @DisplayName("6. 채팅 대상 회원이 탈퇴한 경우")
             public void startChatroomByMemberIdFailsWhenTargetMemberIsBlind() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.USER_DEACTIVATED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_TARGET_USER_DEACTIVATED;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -369,7 +370,7 @@ public class ChatServiceTest {
             public void startChatroomByMemberIdFailsWhenNoExistingChatroomAndBlock()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
 
                 Member member = blockService.blockMember(member1.getId(), member2.getId());
 
@@ -389,7 +390,7 @@ public class ChatServiceTest {
             public void startChatroomByMemberIdFailsWhenNoExistingChatroomAndBlocked()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
 
                 Member member = blockService.blockMember(member2.getId(), member1.getId());
 
@@ -409,7 +410,7 @@ public class ChatServiceTest {
             public void startChatroomByMemberIdFailsWhenBlockedAndExitedChatroomExists()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 // 기존 채팅방 먼저 생성
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByMemberId(
                     member1.getId(), member2.getId());
@@ -437,7 +438,7 @@ public class ChatServiceTest {
             @DisplayName("10. 기존 채팅방 있음 && 내가 상대방을 차단한 경우")
             public void startChatroomByMemberIdFailsWhenExistChatroomAndBlock() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
 
                 // 기존 채팅방 먼저 생성
                 chatCommandService.startChatroomByMemberId(member1.getId(), member2.getId());
@@ -620,7 +621,7 @@ public class ChatServiceTest {
             @DisplayName("15. 게시글을 찾을 수 없는 경우")
             public void startChatroomByBoardIdFailsWhenBoardNotFound() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BOARD_NOT_FOUND;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BOARD_NOT_FOUND;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -637,7 +638,7 @@ public class ChatServiceTest {
             @DisplayName("16. 게시글 작성자가 본인인 경우")
             public void startChatroomByBoardIdFailsWhenBoardAuthorIsSelf() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_MEMBER_ID_INVALID;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BOARD_CREATOR_IS_SELF;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -655,7 +656,7 @@ public class ChatServiceTest {
             @DisplayName("17. 게시글 작성자가 탈퇴한 경우")
             public void startChatroomByBoardIdFailsWhenBoardAuthorIsBlind() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.USER_DEACTIVATED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_TARGET_USER_DEACTIVATED;
                 member2.deactiveMember();
 
                 // when
@@ -675,7 +676,7 @@ public class ChatServiceTest {
             public void startChatroomByBoardIdFailsWhenNoExistingChatroomAndBlock()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
                 blockService.blockMember(member1.getId(), member2.getId());
 
                 // when
@@ -695,7 +696,7 @@ public class ChatServiceTest {
             public void startChatroomByBoardIdFailsWhenNoExistingChatroomAndBlocked()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 blockService.blockMember(member2.getId(), member1.getId());
 
                 // when
@@ -715,7 +716,7 @@ public class ChatServiceTest {
             public void startChatroomByBoardIdFailsWhenBlockedAndExitedChatroomExists()
                 throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 // 기존 채팅방 먼저 생성
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByBoardId(
                     member1.getId(), member2Board.getId());
@@ -742,7 +743,7 @@ public class ChatServiceTest {
             @DisplayName("21. 기존 채팅방 있음 && 내가 상대방을 차단한 경우")
             public void startChatroomByBoardIdFailsWhenExistingChatroomAndBlock() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
                 chatCommandService.startChatroomByBoardId(member1.getId(), member2Board.getId());
                 blockService.blockMember(member1.getId(), member2.getId());
 
@@ -931,7 +932,7 @@ public class ChatServiceTest {
             @DisplayName("25. 매칭 대상 회원으로 동일한 회원을 요청한 경우")
             public void startChatroomByMatchingFailsWhenMemberIdsAreSame() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_MEMBER_ID_INVALID;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_TARGET_USER_IS_SELF;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -947,7 +948,7 @@ public class ChatServiceTest {
             @DisplayName("26. 매칭 대상 회원이 탈퇴한 경우")
             public void startChatroomByMatchingFailsWhenTargetMemberIsBlind() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.USER_DEACTIVATED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_TARGET_USER_DEACTIVATED;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -967,7 +968,7 @@ public class ChatServiceTest {
                 // 상대방이 나를 차단
                 Member blockerMember = blockService.blockMember(member2.getId(), member1.getId());
 
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -987,7 +988,7 @@ public class ChatServiceTest {
                 // 내가 상대방을 차단
                 Member blockerMember = blockService.blockMember(member1.getId(), member2.getId());
 
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
@@ -1165,7 +1166,7 @@ public class ChatServiceTest {
 
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
-                    chatCommandService.enterChatroom(newUuid, member1.getId());
+                    chatCommandService.enterChatroom(savedChatroom.getUuid(), member1.getId());
                 });
 
                 // then
@@ -1178,7 +1179,7 @@ public class ChatServiceTest {
             @DisplayName("33. 상대에게 차단 당함 && 이미 퇴장한 채팅방인 경우")
             public void enterChatroomFailedWhenBlockedAndExit() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
@@ -1222,7 +1223,7 @@ public class ChatServiceTest {
             @DisplayName("34. 상대를 차단한 경우")
             public void enterChatroomFailedWhenBlock() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_CHAT_START_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
@@ -1612,7 +1613,7 @@ public class ChatServiceTest {
             @DisplayName("41. 내가 상대에게 차단 당한 경우")
             public void enterChatroomFailedWhenBlocked() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.BLOCKED_BY_CHAT_TARGET_SEND_CHAT_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_ADD_FAILED_BLOCKED_BY_CHAT_TARGET;
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
@@ -1661,7 +1662,7 @@ public class ChatServiceTest {
             @DisplayName("42. 내가 상대를 차단한 경우")
             public void enterChatroomFailedWhenBlock() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_TARGET_IS_BLOCKED_SEND_CHAT_FAILED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_ADD_FAILED_CHAT_TARGET_IS_BLOCKED;
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
@@ -1710,7 +1711,7 @@ public class ChatServiceTest {
             @DisplayName("43. 상대가 탈퇴한 회원인 경우")
             public void enterChatroomFailedWhenBlind() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.USER_DEACTIVATED;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_ADD_FAILED_TARGET_USER_DEACTIVATED;
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
@@ -1779,7 +1780,7 @@ public class ChatServiceTest {
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
                     .lastViewDate(null)
-                    .lastJoinDate(null)
+                    .lastJoinDate(LocalDateTime.now())
                     .chatroom(newChatroom)
                     .build();
                 memberChatroom1.setMember(member1);
@@ -1917,7 +1918,7 @@ public class ChatServiceTest {
             @DisplayName("48. timestamp에 해당하는 채팅 메시지가 존재하지 않는 경우")
             public void readChatMessageFailedWhenTimestampMsgNotExists() throws Exception {
                 // given
-                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_MESSAGE_NOT_FOUND;
+                ErrorStatus expectedErrorCode = ErrorStatus.CHAT_READ_FAILED_CHAT_MESSAGE_NOT_FOUND;
 
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
@@ -1930,7 +1931,7 @@ public class ChatServiceTest {
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
                     .lastViewDate(null)
-                    .lastJoinDate(null)
+                    .lastJoinDate(LocalDateTime.now())
                     .chatroom(newChatroom)
                     .build();
                 memberChatroom1.setMember(member1);
