@@ -1,5 +1,7 @@
 package com.gamegoo.integration.friend;
 
+import com.gamegoo.apiPayload.code.status.ErrorStatus;
+import com.gamegoo.apiPayload.exception.GeneralException;
 import com.gamegoo.domain.board.Board;
 import com.gamegoo.domain.friend.Friend;
 import com.gamegoo.domain.member.LoginType;
@@ -10,16 +12,23 @@ import com.gamegoo.repository.member.MemberRepository;
 import com.gamegoo.service.member.FriendService;
 import com.gamegoo.service.member.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -214,5 +223,63 @@ public class FriendCommandServiceTest {
             friendRepository.save(memberFriend);
             friendRepository.save(targetMemberFriend);
         });
+    }
+
+    @Nested
+    @DisplayName("친구 목록 조회")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class getFriends {
+
+        @Nested
+        @DisplayName("성공 케이스")
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        class SuccessCase {
+            @Test
+            @Order(1)
+            @DisplayName("1. 친구가 10명 이하인 경우")
+            public void getFriendsSucceeds() throws Exception {
+                // given
+                setFriends();
+
+                // when
+                Slice<Friend> friends1 = friendService.getFriends(member1.getId(), null);
+                Slice<Friend> friends2 = friendService.getFriends(member2.getId(), null);
+
+                // then
+                // member1의 친구 목록 size 검증
+                assertEquals(4, friends1.getContent().size());
+
+                // member2의 친구 목록 size 검증
+                assertEquals(1, friends2.getContent().size());
+
+                // member1의 친구 목록 오름차순 정렬 검증
+                assertEquals(member2, friends1.getContent().get(0).getToMember());
+                assertEquals(member5, friends1.getContent().get(3).getToMember());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패 케이스")
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        class FailCase {
+
+            @Test
+            @Order(2)
+            @DisplayName("2. cursorId로 음수를 입력한 경우")
+            public void getFriendsFailedWhenCursorIdIsNegative() throws Exception {
+                // given
+                ErrorStatus expectedErrorCode = ErrorStatus.CURSOR_INVALID;
+
+                // when
+                GeneralException exception = assertThrows(GeneralException.class, () -> {
+                    friendService.getFriends(member1.getId(), -1L);
+                });
+
+                // then
+                assertEquals(expectedErrorCode, exception.getCode());
+
+            }
+        }
+
     }
 }
