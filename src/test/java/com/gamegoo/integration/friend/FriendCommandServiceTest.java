@@ -363,4 +363,43 @@ public class FriendCommandServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("모든 친구 id 검색")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class getFriendsIds {
+        @Nested
+        @DisplayName("성공 케이스")
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        class SuccessCase {
+            @Test
+            @Order(7)
+            @DisplayName("7. 친구가 여려명인 경우")
+            public void getFriendsIdsSucceeds() throws Exception {
+                // given
+                setFriends();
+
+                // when
+                List<Long> friendIds = friendService.getFriendIds(member1.getId());
+
+                // then
+                // 검색 결과 크기 검증
+                assertEquals(4, friendIds.size());
+            }
+
+            @Test
+            @Order(8)
+            @DisplayName("8. 친구가 없는 경우")
+            public void getFriendsIdsSucceedsWhenNoResult() throws Exception {
+                // given
+
+                // when
+                List<Long> friendIds = friendService.getFriendIds(member1.getId());
+
+                // then
+                assertEquals(0, friendIds.size());
+            }
+        }
+    }
+
 }
