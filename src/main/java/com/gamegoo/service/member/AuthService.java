@@ -225,7 +225,7 @@ public class AuthService {
      * @param email
      * @param code
      */
-    public void verifyEmail(String email, String code) {
+    public void verifyCode(String email, String code) {
         // 이메일로 보낸 인증 코드 중 가장 최근의 데이터를 불러옴
         EmailVerifyRecord emailVerifyRecord = emailVerifyRecordRepository.findByEmailOrderByUpdatedAtDesc(
                 email, PageRequest.of(0, 1))

@@ -4,6 +4,7 @@ import com.gamegoo.apiPayload.ApiResponse;
 import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import com.gamegoo.apiPayload.exception.handler.MemberHandler;
 import com.gamegoo.dto.member.MemberRequest;
+import com.gamegoo.service.member.AuthService;
 import com.gamegoo.service.member.PasswordService;
 import com.gamegoo.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 public class PasswordController {
 
     private final PasswordService passwordService;
+    private final AuthService authService;
 
     @PostMapping("/check")
     @Operation(summary = "JWT 토큰이 필요한 비밀번호 확인 API 입니다.", description = "API for checking password with JWT")
@@ -45,7 +47,7 @@ public class PasswordController {
     public ApiResponse<String> resetPasswordWithJWT(
             @Valid @RequestBody MemberRequest.PasswordRequestJWTDTO passwordRequestDTO) {
         Long currentUserId = JWTUtil.getCurrentUserId();
-        passwordService.updatePassword(currentUserId, passwordRequestDTO.getOldPassword(), passwordRequestDTO.getNewPassword());
+        passwordService.updatePasswordById(currentUserId, passwordRequestDTO.getOldPassword(), passwordRequestDTO.getNewPassword());
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
@@ -54,8 +56,16 @@ public class PasswordController {
     @Operation(summary = "비밀번호 재설정 API 입니다.", description = "API for reseting password")
     public ApiResponse<String> resetPassword(
             @Valid @RequestBody MemberRequest.PasswordRequestDTO passwordRequestDTO) {
+        // dto
+        String email = passwordRequestDTO.getEmail();
+        String verifyCode = passwordRequestDTO.getVerifyCode();
+        String newPassword = passwordRequestDTO.getNewPassword();
 
-        passwordService.updatePasswordWithEmail(passwordRequestDTO.getEmail());
+        // 인증코드 검증
+        authService.verifyCode(email,verifyCode);
+
+        // 비밀번호 재설정
+        passwordService.updatePasswordWithEmail(email, newPassword);
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }

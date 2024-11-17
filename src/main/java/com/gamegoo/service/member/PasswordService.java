@@ -4,7 +4,6 @@ import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import com.gamegoo.apiPayload.exception.handler.MemberHandler;
 import com.gamegoo.domain.member.Member;
 import com.gamegoo.repository.member.MemberRepository;
-import com.gamegoo.util.CodeGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -44,7 +43,7 @@ public class PasswordService {
      * @param userId
      * @param newPassword
      */
-    public void updatePassword(Long userId, String oldPassword, String newPassword) {
+    public void updatePasswordById(Long userId, String oldPassword, String newPassword) {
         // jwt 토큰으로 멤버 찾기
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -66,20 +65,15 @@ public class PasswordService {
      *
      * @param email
      */
-    public void updatePasswordWithEmail(String email) {
+    public void updatePasswordWithEmail(String email, String newPassword) {
         // email으로 멤버 찾기
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 랜덤 임시 비밀번호 생성
-        String tempPassword = CodeGeneratorUtil.generatePasswordRandomCode();
+        // 비밀번호 재설정
+        member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+        memberRepository.save(member);
 
-        // 이메일 전송
-        sendEmailInternal(email,tempPassword);
-
-            // 비밀번호 재설정
-            member.updatePassword(bCryptPasswordEncoder.encode(tempPassword));
-            memberRepository.save(member);
     }
 
     /**

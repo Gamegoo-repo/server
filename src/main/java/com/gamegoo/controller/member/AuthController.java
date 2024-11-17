@@ -78,7 +78,7 @@ public class AuthController {
             @Valid @RequestBody MemberRequest.EmailCodeRequestDTO emailCodeRequestDTO) {
         String email = emailCodeRequestDTO.getEmail();
         String code = emailCodeRequestDTO.getCode();
-        authService.verifyEmail(email, code);
+        authService.verifyCode(email, code);
         return ApiResponse.onSuccess("인증코드 검증에 성공했습니다.");
     }
 
