@@ -25,6 +25,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -281,5 +282,85 @@ public class FriendCommandServiceTest {
             }
         }
 
+    }
+
+    @Nested
+    @DisplayName("소환사명으로 친구 검색")
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class searchFriendByQueryString {
+        @Nested
+        @DisplayName("성공 케이스")
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        class SuccessCase {
+            @Test
+            @Order(3)
+            @DisplayName("3. 검색어와 일치하는 친구가 1명인 경우")
+            public void searchFriendByQueryStringSucceeds() throws Exception {
+                // given
+                setFriends();
+
+                // when
+                List<Friend> friends = friendService.searchFriendByQueryString(member1.getId(), "member2");
+
+                // then
+                assertEquals(1, friends.size());
+            }
+
+            @Test
+            @Order(4)
+            @DisplayName("4. 검색어와 일치하는 친구가 여러명인 경우")
+            public void searchFriendsByQueryStringSucceeds() throws Exception {
+                // given
+                setFriends();
+
+                // when
+                List<Friend> friends = friendService.searchFriendByQueryString(member1.getId(), "member");
+
+                // then
+                // 검색 결과 size 검증
+                assertEquals(4, friends.size());
+
+                // 검색 결과 오름차순 정렬 여부 검증
+                assertEquals(member2, friends.get(0).getToMember());
+                assertEquals(member5, friends.get(3).getToMember());
+            }
+
+            @Test
+            @Order(5)
+            @DisplayName("5. 검색어와 일치하는 친구가 없는 경우")
+            public void searchFriendByQueryStringSucceedsWhenNoResult() throws Exception {
+                // given
+
+                // when
+                List<Friend> friends = friendService.searchFriendByQueryString(member1.getId(), "member");
+
+                // then
+                assertEquals(0, friends.size());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패 케이스")
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        class FailCase {
+            @Test
+            @Order(6)
+            @DisplayName("6. 검색어 string이 100자를 초과하는 경우")
+            public void searchFriendsByQueryStringFailed() throws Exception {
+                // given
+                ErrorStatus expectedErrorCode = ErrorStatus.FRIEND_SEARCH_QUERY_BAD_REQUEST;
+
+                String queryString = "membermembermembermembermembermembermembermembermembermembermembermembermembermembermembermembermembermembermembermember";
+
+                // when
+                GeneralException exception = assertThrows(GeneralException.class, () -> {
+                    friendService.searchFriendByQueryString(member1.getId(), queryString);
+                });
+
+                // then
+                assertEquals(expectedErrorCode, exception.getCode());
+
+            }
+        }
     }
 }
