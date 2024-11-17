@@ -204,7 +204,7 @@ public class ChatCommandService {
 
         memberChatroomRepository.findByMemberIdAndChatroomId(
                 memberId, chatroom.getId())
-            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_NOT_EXIST));
+            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_ACCESS_DENIED));
 
         // 채팅 상대 회원 조회
         Member targetMember = memberChatroomRepository.findTargetMemberByChatroomIdAndMemberId(
@@ -234,7 +234,7 @@ public class ChatCommandService {
         // 해당 채팅방이 회원의 것이 맞는지 검증
         MemberChatroom memberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
                 memberId, chatroom.getId())
-            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_NOT_EXIST));
+            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_ACCESS_DENIED));
 
         // 회원 간 차단 여부 및 탈퇴 여부 검증
         // 대화 상대 회원 조회
@@ -307,7 +307,7 @@ public class ChatCommandService {
 
         MemberChatroom memberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
                 member.getId(), chatroom.getId())
-            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_NOT_EXIST));
+            .orElseThrow(() -> new ChatHandler(ErrorStatus.CHATROOM_ACCESS_DENIED));
 
         // 내가 입장한 상태인지 검증
         if (memberChatroom.getLastJoinDate() == null) {
