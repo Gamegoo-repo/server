@@ -15,9 +15,6 @@ import com.gamegoo.service.member.ProfileService;
 import com.gamegoo.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import java.util.List;
-import java.util.Map;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,6 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,20 +38,18 @@ public class MatchingController {
     private final ChatCommandService chatCommandService;
     private final ProfileService profileService;
 
-
     @PostMapping("/priority")
-    @Operation(summary = "우선순위 계산 및 매칭 기록을 저장하는 API 입니다.", description =
-        "API for calculating and recording matching \n\n"
-            + "gameMode: 1 ~ 4 int를 넣어주세요. (1: 빠른 대전, 2: 솔로 랭크, 3: 자유 랭크, 4: 칼바람 나락) \n\n"
-            + "mike: true 또는 false를 넣어주세요. \n\n"
-            + "matchingType: \"BASIC\" 또는 \"PRECISE\"를 넣어주세요.\n\n"
-            + "mainP: 0 ~ 5 int를 넣어주세요. \n\n"
-            + "subP: 0 ~ 5 int를 넣어주세요. \n\n"
-            + "wantP: 0 ~ 5 int를 넣어주세요. \n\n"
-            + "gameStyleList: 1 ~ 17 int를 넣어주세요.")
-
+    @Operation(summary = "우선순위 계산 및 매칭 기록을 저장하는 API 입니다.",
+            description = "API for calculating and recording matching \n\n"
+                    + "gameMode: 1 ~ 4 int를 넣어주세요. (1: 빠른 대전, 2: 솔로 랭크, 3: 자유 랭크, 4: 칼바람 나락) \n\n"
+                    + "mike: true 또는 false를 넣어주세요. \n\n"
+                    + "matchingType: \"BASIC\" 또는 \"PRECISE\"를 넣어주세요.\n\n"
+                    + "mainP: 0 ~ 5 int를 넣어주세요. \n\n"
+                    + "subP: 0 ~ 5 int를 넣어주세요. \n\n"
+                    + "wantP: 0 ~ 5 int를 넣어주세요. \n\n"
+                    + "gameStyleList: 1 ~ 17 int를 넣어주세요.")
     public ApiResponse<MatchingResponse.PriorityMatchingResponseDTO> saveMatching(
-        @RequestBody @Valid MatchingRequest.InitializingMatchingRequestDTO request) {
+            @RequestBody @Valid MatchingRequest.InitializingMatchingRequestDTO request) {
         Long id = JWTUtil.getCurrentUserId();
         // 매칭 타입 유효성 검사
         try {
@@ -60,8 +59,7 @@ public class MatchingController {
         }
 
         // 우선순위 계산 리스트를 Service로부터 가져옴
-        Map<String, List<MemberPriority>> priorityLists = matchingService.calculatePriorityList(
-            request, id);
+        Map<String, List<MemberPriority>> priorityLists = matchingService.calculatePriorityList(request, id);
 
         // 각 우선순위 리스트 추출
         List<MemberPriority> myPriorityList = priorityLists.get("myPriorityList");
@@ -75,17 +73,17 @@ public class MatchingController {
         List<String> gameStyleList = profileService.getGameStyleList(member);
 
         // ApiResponse로 변환하여 반환
-        return ApiResponse.onSuccess(MatchingConverter.toPriorityMatchingResponseDTO(
-            member, request, myPriorityList, otherPriorityList, gameStyleList));
+        return ApiResponse.onSuccess(MatchingConverter.toPriorityMatchingResponseDTO(member, request, myPriorityList,
+                otherPriorityList, gameStyleList));
     }
 
     @PatchMapping("/status")
     @Operation(summary = "나의 매칭 기록 상태(status)를 수정하는 API입니다.", description = "API for matching status modification")
-    public ApiResponse<String> modifyMatching(
-        @RequestBody @Valid MatchingRequest.ModifyMatchingRequestDTO request) {
+    public ApiResponse<String> modifyMatching(@RequestBody @Valid MatchingRequest.ModifyMatchingRequestDTO request) {
         Long id = JWTUtil.getCurrentUserId();
 
         matchingService.updateMyStatus(request, id);
+
         return ApiResponse.onSuccess("매칭 상태 변경에 성공했습니다.");
     }
 
@@ -93,8 +91,8 @@ public class MatchingController {
     @Parameter(name = "targetMemberId", description = "매칭 기록을 수정할 상대 회원의 id 입니다.")
     @Operation(summary = "나와 상대 회원의 매칭 기록 상태 수정 API", description = "나와 특정 상대 회원의 매칭 기록 상태를 수정하는 API 입니다.")
     public ApiResponse<String> modifyBothMatching(
-        @RequestBody @Valid MatchingRequest.ModifyMatchingRequestDTO request,
-        @PathVariable(name = "targetMemberId") Long targetMemberId) {
+            @RequestBody @Valid MatchingRequest.ModifyMatchingRequestDTO request,
+            @PathVariable(name = "targetMemberId") Long targetMemberId) {
         Long memberId = JWTUtil.getCurrentUserId();
 
         matchingService.updateBothStatus(request, memberId, targetMemberId);
@@ -104,23 +102,22 @@ public class MatchingController {
 
     @PatchMapping("/found/target/{targetMemberId}/{gameMode}")
     @Parameter(name = "targetMemberId", description = "매칭 상대 회원의 id 입니다.")
-    @Operation(summary = "매칭 FOUND API", description = "나와 특정 상대 회원의 매칭 기록 상태를 FOUND 상태로 변경하고, 매칭 요청 데이터를 리턴하는 API 입니다.")
+    @Operation(summary = "매칭 FOUND API", description = "나와 상대 회원의 매칭 기록 상태를 FOUND로 변경하고, 매칭 요청 데이터를 리턴하는 API 입니다.")
     public ApiResponse<MatchingResponse.matchingFoundResponseDTO> matchingFound(
-        @PathVariable(name = "targetMemberId") Long targetMemberId,
-        @PathVariable(name = "gameMode") Integer gameMode) {
+            @PathVariable(name = "targetMemberId") Long targetMemberId,
+            @PathVariable(name = "gameMode") Integer gameMode) {
         Long memberId = JWTUtil.getCurrentUserId();
 
-        return ApiResponse.onSuccess(
-            matchingService.foundMatching(memberId, targetMemberId, gameMode));
-
+        return ApiResponse.onSuccess(matchingService.foundMatching(memberId, targetMemberId, gameMode));
     }
 
     @PatchMapping("/success/target/{targetMemberId}/{gameMode}")
     @Parameter(name = "targetMemberId", description = "매칭 상대 회원의 id 입니다.")
-    @Operation(summary = "매칭 SUCCESS API", description = "나와 특정 상대 회원의 매칭 기록 상태를 SUCCESS 상태로 변경하고, 채팅방을 시작해 uuid를 리턴하는 API 입니다.")
+    @Operation(summary = "매칭 SUCCESS API",
+            description = "나와 상대 회원의 매칭 기록 상태를 SUCCESS로 변경하고, 채팅방을 시작해 uuid를 리턴하는 API 입니다.")
     public ApiResponse<String> matchingSuccess(
-        @PathVariable(name = "targetMemberId") Long targetMemberId,
-        @PathVariable(name = "gameMode") Integer gameMode) {
+            @PathVariable(name = "targetMemberId") Long targetMemberId,
+            @PathVariable(name = "gameMode") Integer gameMode) {
         Long memberId = JWTUtil.getCurrentUserId();
 
         matchingService.successMatching(memberId, targetMemberId, gameMode);
