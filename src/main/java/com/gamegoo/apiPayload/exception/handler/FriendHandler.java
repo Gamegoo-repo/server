@@ -8,4 +8,5 @@ public class FriendHandler extends GeneralException {
     public FriendHandler(BaseErrorCode code) {
         super(code);
     }
+
 }

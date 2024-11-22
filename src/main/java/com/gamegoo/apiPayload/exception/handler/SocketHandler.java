@@ -8,4 +8,5 @@ public class SocketHandler extends GeneralException {
     public SocketHandler(BaseErrorCode code) {
         super(code);
     }
+
 }

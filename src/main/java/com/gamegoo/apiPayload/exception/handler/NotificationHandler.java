@@ -8,4 +8,5 @@ public class NotificationHandler extends GeneralException {
     public NotificationHandler(BaseErrorCode code) {
         super(code);
     }
+
 }
