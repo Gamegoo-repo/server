@@ -9,9 +9,23 @@ import com.gamegoo.domain.gamestyle.MemberGameStyle;
 import com.gamegoo.domain.manner.MannerRating;
 import com.gamegoo.domain.notification.Notification;
 import com.gamegoo.domain.report.Report;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,8 +129,8 @@ public class Member extends BaseDateTimeEntity {
         this.setUpdatedAt(LocalDateTime.now());
     }
 
-    public void updateMike(Boolean isMike){
-        this.mike=isMike;
+    public void updateMike(Boolean isMike) {
+        this.mike = isMike;
     }
 
     public void updatePosition(Integer mainPosition, Integer subPosition, Integer wantPosition) {
@@ -133,7 +147,8 @@ public class Member extends BaseDateTimeEntity {
         this.blind = true;
     }
 
-    public void updateMemberFromMatching(Integer mainPosition, Integer subPosition, Integer wantPosition, Boolean mike) {
+    public void updateMemberFromMatching(Integer mainPosition, Integer subPosition, Integer wantPosition,
+                                         Boolean mike) {
         this.mainPosition = mainPosition;
         this.subPosition = subPosition;
         this.wantPosition = wantPosition;
@@ -161,9 +176,13 @@ public class Member extends BaseDateTimeEntity {
         this.password = password;
     }
 
-    public void setMannerScore(int mannerScore) { this.mannerScore = mannerScore; }
+    public void setMannerScore(int mannerScore) {
+        this.mannerScore = mannerScore;
+    }
+
     public void setMannerLevel(int mannerLevel) {
         this.mannerLevel = mannerLevel;
     }
+
 }
 

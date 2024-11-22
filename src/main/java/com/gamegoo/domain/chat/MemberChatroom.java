@@ -1,9 +1,13 @@
 package com.gamegoo.domain.chat;
 
-import com.gamegoo.domain.member.Member;
 import com.gamegoo.domain.common.BaseDateTimeEntity;
+import com.gamegoo.domain.member.Member;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,12 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -58,4 +57,5 @@ public class MemberChatroom extends BaseDateTimeEntity {
     public void updateLastJoinDate(LocalDateTime lastJoinDate) {
         this.lastJoinDate = lastJoinDate;
     }
+
 }

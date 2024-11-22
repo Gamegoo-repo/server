@@ -2,6 +2,12 @@ package com.gamegoo.domain;
 
 import com.gamegoo.domain.common.BaseDateTimeEntity;
 import com.gamegoo.domain.member.Member;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,11 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Block")
@@ -61,4 +62,5 @@ public class Block extends BaseDateTimeEntity {
     public void updateIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
+
 }

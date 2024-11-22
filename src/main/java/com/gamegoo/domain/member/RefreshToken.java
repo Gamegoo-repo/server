@@ -1,9 +1,21 @@
 package com.gamegoo.domain.member;
 
 import com.gamegoo.domain.common.BaseDateTimeEntity;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "RefreshToken")
@@ -12,9 +24,10 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class RefreshToken extends BaseDateTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="refresh_token_id")
+    @Column(name = "refresh_token_id")
     private Long id;
 
     @Column(name = "refresh_token")
@@ -24,7 +37,8 @@ public class RefreshToken extends BaseDateTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public void updateRefreshToken(String refreshToken){
+    public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
 }
