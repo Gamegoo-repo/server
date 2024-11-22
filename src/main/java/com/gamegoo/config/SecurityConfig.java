@@ -1,7 +1,5 @@
 package com.gamegoo.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import com.gamegoo.filter.JWTExceptionHandlerFilter;
 import com.gamegoo.filter.JWTFilter;
 import com.gamegoo.filter.LoggingFilter;
@@ -10,8 +8,6 @@ import com.gamegoo.repository.member.MemberRepository;
 import com.gamegoo.repository.member.RefreshTokenRepository;
 import com.gamegoo.security.CustomUserDetailService;
 import com.gamegoo.util.JWTUtil;
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +24,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -40,20 +41,19 @@ public class SecurityConfig {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
     public JWTFilter jwtFilter() {
         List<String> excludedPaths = Arrays.asList("/swagger-ui/", "/v3/api-docs",
-            "/v1/member/join", "/v1/member/login", "/v1/member/email", "/v1/member/refresh",
-            "/v1/member/riot", "/v1/posts/list", "/v1/posts/list/{boardId}",
-            "/v1/test/chatroom/create/matched", "/v1/member/password/reset",
-            "/v1/internal");
-        return new JWTFilter(jwtUtil, excludedPaths, customUserDetailService);
+                "/v1/member/join", "/v1/member/login", "/v1/member/email", "/v1/member/refresh",
+                "/v1/member/riot", "/v1/posts/list", "/v1/posts/list/{boardId}",
+                "/v1/test/chatroom/create/matched", "/v1/member/password/reset",
+                "/v1/internal");
 
+        return new JWTFilter(jwtUtil, excludedPaths, customUserDetailService);
     }
 
     @Bean
@@ -64,28 +64,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
-            .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .cors(withDefaults())
-            .authorizeHttpRequests((auth) -> auth
-                .antMatchers("/", "/v1/member/join", "/v1/member/login", "/v1/member/email/**",
-                    "/v1/member/refresh", "/v1/member/riot", "/v1/posts/list/**",
-                    "/v1/test/chatroom/create/matched", "/v1/member/password/reset",
-                    "/v1/member/profile/other").permitAll()
-                .antMatchers("/v1/internal/**").permitAll()
-                .antMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated())
-            .addFilterBefore(new JWTExceptionHandlerFilter(),
-                UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new LoggingFilter(jwtUtil), JWTExceptionHandlerFilter.class)
-            .addFilterAt(
-                new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
-                    memberRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtFilter(), LoginFilter.class)
-            .sessionManagement((session) -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
+                .authorizeHttpRequests((auth) -> auth
+                        .antMatchers("/", "/v1/member/join", "/v1/member/login", "/v1/member/email/**",
+                                "/v1/member/refresh", "/v1/member/riot", "/v1/posts/list/**",
+                                "/v1/test/chatroom/create/matched", "/v1/member/password/reset",
+                                "/v1/member/profile/other").permitAll()
+                        .antMatchers("/v1/internal/**").permitAll()
+                        .antMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(new JWTExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new LoggingFilter(jwtUtil), JWTExceptionHandlerFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
+                        memberRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), LoginFilter.class)
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
@@ -94,6 +90,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("https://api.gamegoo.co.kr");
@@ -102,6 +99,8 @@ public class SecurityConfig {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
+
         return new CorsFilter(source);
     }
+
 }
