@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 public class MemberConverter {
 
     public static MemberResponse.blockListDTO toBlockListDTO(Page<Member> blockList) {
-        List<MemberResponse.blockedMemberDTO> blockedMemberDtoList = blockList.stream()
+        List<MemberResponse.blockedMemberDTO> blockedMemberDtoList = blockList
+                .stream()
                 .map(MemberConverter::toBlockedMemberDTO)
                 .collect(Collectors.toList());
 
@@ -41,20 +42,25 @@ public class MemberConverter {
     public static MemberResponse.myProfileMemberDTO toMyProfileDTO(Member member) {
         List<MemberResponse.GameStyleResponseDTO> gameStyleResponseDTOList = null;
         if (member.getMemberGameStyleList() != null) {
-            gameStyleResponseDTOList = member.getMemberGameStyleList().stream()
-                    .map(memberGameStyle -> MemberResponse.GameStyleResponseDTO.builder()
-                            .gameStyleId(memberGameStyle.getGameStyle().getId())
-                            .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
-                            .build()).collect(Collectors.toList());
+            gameStyleResponseDTOList = member.getMemberGameStyleList()
+                    .stream()
+                    .map(memberGameStyle ->
+                            MemberResponse.GameStyleResponseDTO.builder()
+                                    .gameStyleId(memberGameStyle.getGameStyle().getId())
+                                    .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
+                                    .build())
+                    .collect(Collectors.toList());
         }
 
         List<MemberResponse.ChampionResponseDTO> championResponseDTOList = null;
         if (member.getMemberChampionList() != null) {
             championResponseDTOList = member.getMemberChampionList().stream()
-                    .map(memberChampion -> MemberResponse.ChampionResponseDTO.builder()
-                            .championId(memberChampion.getChampion().getId())
-                            .championName(memberChampion.getChampion().getName())
-                            .build()).collect(Collectors.toList());
+                    .map(memberChampion ->
+                            MemberResponse.ChampionResponseDTO.builder()
+                                    .championId(memberChampion.getChampion().getId())
+                                    .championName(memberChampion.getChampion().getName())
+                                    .build())
+                    .collect(Collectors.toList());
         }
 
         return MemberResponse.myProfileMemberDTO.builder()
@@ -83,20 +89,24 @@ public class MemberConverter {
     public static MemberResponse.myProfileDTO profileDTO(Member member, Double mannerScoreRank) {
         List<MemberResponse.GameStyleResponseDTO> gameStyleResponseDTOList = null;
         if (member.getMemberGameStyleList() != null) {
-            gameStyleResponseDTOList = member.getMemberGameStyleList().stream()
+            gameStyleResponseDTOList = member.getMemberGameStyleList()
+                    .stream()
                     .map(memberGameStyle -> MemberResponse.GameStyleResponseDTO.builder()
                             .gameStyleId(memberGameStyle.getGameStyle().getId())
                             .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
-                            .build()).collect(Collectors.toList());
+                            .build())
+                    .collect(Collectors.toList());
         }
 
         List<MemberResponse.ChampionResponseDTO> championResponseDTOList = null;
         if (member.getMemberChampionList() != null) {
-            championResponseDTOList = member.getMemberChampionList().stream()
+            championResponseDTOList = member.getMemberChampionList()
+                    .stream()
                     .map(memberChampion -> MemberResponse.ChampionResponseDTO.builder()
                             .championId(memberChampion.getChampion().getId())
                             .championName(memberChampion.getChampion().getName())
-                            .build()).collect(Collectors.toList());
+                            .build())
+                    .collect(Collectors.toList());
         }
 
         return MemberResponse.myProfileDTO.builder()
@@ -129,20 +139,24 @@ public class MemberConverter {
                                                                      Long mannerRatingCount) {
         List<MemberResponse.GameStyleResponseDTO> gameStyleResponseDTOList = null;
         if (targetMember.getMemberGameStyleList() != null) {
-            gameStyleResponseDTOList = targetMember.getMemberGameStyleList().stream()
+            gameStyleResponseDTOList = targetMember.getMemberGameStyleList()
+                    .stream()
                     .map(memberGameStyle -> MemberResponse.GameStyleResponseDTO.builder()
                             .gameStyleId(memberGameStyle.getGameStyle().getId())
                             .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
-                            .build()).collect(Collectors.toList());
+                            .build())
+                    .collect(Collectors.toList());
         }
 
         List<MemberResponse.ChampionResponseDTO> championResponseDTOList = null;
         if (targetMember.getMemberChampionList() != null) {
-            championResponseDTOList = targetMember.getMemberChampionList().stream()
+            championResponseDTOList = targetMember.getMemberChampionList()
+                    .stream()
                     .map(memberChampion -> MemberResponse.ChampionResponseDTO.builder()
                             .championId(memberChampion.getChampion().getId())
                             .championName(memberChampion.getChampion().getName())
-                            .build()).collect(Collectors.toList());
+                            .build())
+                    .collect(Collectors.toList());
         }
 
         return MemberResponse.memberProfileDTO.builder()
@@ -173,22 +187,29 @@ public class MemberConverter {
     }
 
     public static MemberResponse.friendListDTO toFriendListDTO(Slice<Friend> friends) {
-        List<friendInfoDTO> friendInfoDTOList = friends.stream()
-                .map(MemberConverter::toFriendInfoDto).collect(Collectors.toList());
+        List<friendInfoDTO> friendInfoDTOList = friends
+                .stream()
+                .map(MemberConverter::toFriendInfoDto)
+                .collect(Collectors.toList());
 
         return MemberResponse.friendListDTO.builder()
                 .friendInfoDTOList(friendInfoDTOList)
                 .list_size(friendInfoDTOList.size())
                 .has_next(friends.hasNext())
-                .next_cursor(friends.hasNext() ?
-                        friends.getContent().get(friendInfoDTOList.size() - 1).getToMember().getId() : null)
+                .next_cursor(
+                        friends.hasNext()
+                                ? friends.getContent().get(friendInfoDTOList.size() - 1).getToMember().getId()
+                                : null)
                 .build();
     }
 
     public static MemberResponse.friendInfoDTO toFriendInfoDto(Friend friend) {
         return MemberResponse.friendInfoDTO.builder()
                 .memberId(friend.getToMember().getId())
-                .name(friend.getToMember().getBlind() ? "(탈퇴한 사용자)" : friend.getToMember().getGameName())
+                .name(
+                        friend.getToMember().getBlind()
+                                ? "(탈퇴한 사용자)"
+                                : friend.getToMember().getGameName())
                 .memberProfileImg(friend.getToMember().getProfileImage())
                 .isLiked(friend.getIsLiked())
                 .isBlind(friend.getToMember().getBlind())

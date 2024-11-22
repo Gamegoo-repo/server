@@ -64,8 +64,7 @@ public class LoggingFilter extends OncePerRequestFilter {
             // 요청 로그 기록
             // 요청 로그 기록
             if (params != null && !params.isEmpty() && !params.equals("{}")) {
-                log.info(
-                        "[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Params: {} | User-Agent: {}",
+                log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Params: {} | User-Agent: {}",
                         requestId, httpMethod, requestUrl, clientIp, memberId, params, userAgent);
             } else {
                 log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | User-Agent: {}",
@@ -113,7 +112,8 @@ public class LoggingFilter extends OncePerRequestFilter {
     // 상태 코드에 맞는 메시지 반환
     private String getStatusMessage(int statusCode) {
         HttpStatus httpStatus = HttpStatus.resolve(statusCode);
-        return httpStatus != null ? statusCode + " " + httpStatus.getReasonPhrase()
+        return httpStatus != null
+                ? statusCode + " " + httpStatus.getReasonPhrase()
                 : String.valueOf(statusCode);
     }
 

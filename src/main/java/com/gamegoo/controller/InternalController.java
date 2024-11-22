@@ -73,7 +73,6 @@ public class InternalController {
             + "정렬 기능 없음, socket서버용 API 입니다.")
     @GetMapping("/{memberId}/friends/ids")
     public ApiResponse<List<Long>> getFriendIds(@PathVariable(name = "memberId") Long memberId) {
-
         return ApiResponse.onSuccess(friendService.getFriendIds(memberId));
     }
 
@@ -121,8 +120,8 @@ public class InternalController {
     public ApiResponse<String> modifyMatching(
             @PathVariable(name = "memberId") Long memberId,
             @RequestBody @Valid MatchingRequest.ModifyMatchingRequestDTO request) {
-
         matchingService.updateMyStatus(request, memberId);
+
         return ApiResponse.onSuccess("매칭 상태 변경에 성공했습니다.");
     }
 
@@ -146,10 +145,7 @@ public class InternalController {
             @PathVariable(name = "memberId") Long memberId,
             @PathVariable(name = "targetMemberId") Long targetMemberId,
             @PathVariable(name = "gameMode") Integer gameMode) {
-
-        return ApiResponse.onSuccess(
-                matchingService.foundMatching(memberId, targetMemberId, gameMode));
-
+        return ApiResponse.onSuccess(matchingService.foundMatching(memberId, targetMemberId, gameMode));
     }
 
     @PatchMapping("/{memberId}/matching/success/target/{targetMemberId}/{gameMode}")

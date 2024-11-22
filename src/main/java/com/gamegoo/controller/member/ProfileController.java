@@ -41,11 +41,14 @@ public class ProfileController {
         List<Long> gameStyleIdList = gameStyleRequestDTO.getGameStyleIdList();
         List<MemberGameStyle> memberGameStyles = profileService.addMemberGameStyles(gameStyleIdList, memberId);
 
-        List<MemberResponse.GameStyleResponseDTO> dtoList = memberGameStyles.stream()
-                .map(memberGameStyle -> MemberResponse.GameStyleResponseDTO.builder()
-                        .gameStyleId(memberGameStyle.getGameStyle().getId())
-                        .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
-                        .build()).collect(Collectors.toList());
+        List<MemberResponse.GameStyleResponseDTO> dtoList = memberGameStyles
+                .stream()
+                .map(memberGameStyle ->
+                        MemberResponse.GameStyleResponseDTO.builder()
+                                .gameStyleId(memberGameStyle.getGameStyle().getId())
+                                .gameStyleName(memberGameStyle.getGameStyle().getStyleName())
+                                .build())
+                .collect(Collectors.toList());
 
         return ApiResponse.onSuccess(dtoList);
     }

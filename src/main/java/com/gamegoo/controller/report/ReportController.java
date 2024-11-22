@@ -37,7 +37,8 @@ public class ReportController {
 
         Report report = reportService.insertReport(request, memberId);
 
-        List<Long> reportTypeIdList = report.getReportTypeMappingList().stream()
+        List<Long> reportTypeIdList = report.getReportTypeMappingList()
+                .stream()
                 .map(reportTypeMapping -> reportTypeMapping.getReportType().getId())
                 .collect(Collectors.toList());
 

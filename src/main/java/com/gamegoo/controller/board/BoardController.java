@@ -48,7 +48,8 @@ public class BoardController {
         Member memberProfile = profileService.findMember(memberId);
         Board saveBoard = boardService.save(request, memberId, memberProfile);
 
-        List<Long> gameStyles = saveBoard.getBoardGameStyles().stream()
+        List<Long> gameStyles = saveBoard.getBoardGameStyles()
+                .stream()
                 .map(boardGameStyle -> boardGameStyle.getGameStyle().getId())
                 .collect(Collectors.toList());
 
@@ -75,15 +76,15 @@ public class BoardController {
     @PutMapping("/{postId}")
     @Operation(summary = "게시판 글 수정 API", description = "게시판에서 글을 수정하는 API 입니다.")
     @Parameter(name = "postId", description = "수정할 게시판 글 id 입니다.")
-    public ApiResponse<BoardResponse.boardUpdateResponseDTO> boardUpdate(
-            @PathVariable long postId,
-            @RequestBody BoardRequest.boardUpdateDTO request) {
+    public ApiResponse<BoardResponse.boardUpdateResponseDTO> boardUpdate(@PathVariable long postId,
+                                                                         @RequestBody BoardRequest.boardUpdateDTO request) {
         Long memberId = JWTUtil.getCurrentUserId();
 
         Member memberProfile = profileService.findMember(memberId);
         Board updateBoard = boardService.update(request, memberId, postId);
 
-        List<Long> gameStyles = updateBoard.getBoardGameStyles().stream()
+        List<Long> gameStyles = updateBoard.getBoardGameStyles()
+                .stream()
                 .map(boardGameStyle -> boardGameStyle.getGameStyle().getId())
                 .collect(Collectors.toList());
 
@@ -124,7 +125,7 @@ public class BoardController {
             @Parameter(name = "pageIdx", description = "조회할 페이지 번호를 입력해주세요. 페이지 당 20개의 게시물을 볼 수 있습니다."),
             @Parameter(name = "mode", description = "(선택) 게임 모드를 입력해주세요. < 빠른대전: 1, 솔로랭크: 2, 자유랭크: 3, 칼바람 나락: 4 >"),
             @Parameter(name = "tier", description = "(선택) 티어를 선택해주세요."),
-            @Parameter(name = "mainPosition", description = "(선택) 포지션을 입력해주세요. < 전체: 0, 탑: 1, 정글: 2, 미드: 3, 바텀: 4, " +
+            @Parameter(name = "mainPosition", description = "(선택) 포지션을 입력해주세요. < 전체: 0, 탑: 1, 정글: 2, 미드: 3, 바텀: 4," +
                     "서포터: 5 >"),
             @Parameter(name = "mike", description = "(선택) 마이크 여부를 선택해주세요.")})
     public ApiResponse<BoardResponse.boardResponseDTO> boardList(

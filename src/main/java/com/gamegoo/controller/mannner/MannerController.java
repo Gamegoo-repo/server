@@ -40,7 +40,8 @@ public class MannerController {
 
         MannerRating mannerrating = mannerService.insertManner(request, memberId);
 
-        List<Long> mannerRatingKeywordList = mannerrating.getMannerRatingKeywordList().stream()
+        List<Long> mannerRatingKeywordList = mannerrating.getMannerRatingKeywordList()
+                .stream()
                 .map(mannerRatingKeyword -> mannerRatingKeyword.getMannerKeyword().getId())
                 .collect(Collectors.toList());
 
@@ -61,7 +62,8 @@ public class MannerController {
 
         MannerRating mannerrating = mannerService.insertBadManner(request, memberId);
 
-        List<Long> mannerRatingKeywordList = mannerrating.getMannerRatingKeywordList().stream()
+        List<Long> mannerRatingKeywordList = mannerrating.getMannerRatingKeywordList()
+                .stream()
                 .map(mannerRatingKeyword -> mannerRatingKeyword.getMannerKeyword().getId())
                 .collect(Collectors.toList());
 
@@ -84,7 +86,8 @@ public class MannerController {
 
         MannerRating updateMannerrating = mannerService.update(request, memberId, mannerId);
 
-        List<Long> mannerRatingKeywords = updateMannerrating.getMannerRatingKeywordList().stream()
+        List<Long> mannerRatingKeywords = updateMannerrating.getMannerRatingKeywordList()
+                .stream()
                 .map(mannerRatingKeyword -> mannerRatingKeyword.getMannerKeyword().getId())
                 .collect(Collectors.toList());
 

@@ -55,8 +55,7 @@ public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
                                   String memberId,
                                   String userAgent) throws IOException {
         // 에러 응답 생성하기
-        ApiResponse<Object> apiResponse = ApiResponse.onFailure(errorStatus.getCode(),
-                errorStatus.getMessage(), null);
+        ApiResponse<Object> apiResponse = ApiResponse.onFailure(errorStatus.getCode(), errorStatus.getMessage(), null);
         response.setStatus(errorStatus.getHttpStatus().value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

@@ -13,22 +13,29 @@ public class NotificationConverter {
 
     public static NotificationResponse.cursorNotificationListDTO toCursorNotificationListDTO(
             Slice<Notification> notifications) {
-        List<notificationDTO> notificationDTOList = notifications.stream()
-                .map(NotificationConverter::toNotificationDTO).collect(Collectors.toList());
+        List<notificationDTO> notificationDTOList = notifications
+                .stream()
+                .map(NotificationConverter::toNotificationDTO)
+                .collect(Collectors.toList());
 
         return NotificationResponse.cursorNotificationListDTO.builder()
                 .notificationDTOList(notificationDTOList)
                 .list_size(notificationDTOList.size())
                 .has_next(notifications.hasNext())
                 // next cursor를 현재 notificationList의 가장 마지막 요소의 id로 주기
-                .next_cursor(notifications.hasNext() ? notifications.getContent().get(9).getId() : null)
+                .next_cursor(
+                        notifications.hasNext()
+                                ? notifications.getContent().get(9).getId()
+                                : null)
                 .build();
     }
 
     public static NotificationResponse.pageNotificationListDTO toPageNotificationListDTO(
             Page<Notification> notifications) {
-        List<notificationDTO> notificationDTOList = notifications.stream()
-                .map(NotificationConverter::toNotificationDTO).collect(Collectors.toList());
+        List<notificationDTO> notificationDTOList = notifications
+                .stream()
+                .map(NotificationConverter::toNotificationDTO)
+                .collect(Collectors.toList());
 
         return NotificationResponse.pageNotificationListDTO.builder()
                 .notificationDTOList(notificationDTOList)

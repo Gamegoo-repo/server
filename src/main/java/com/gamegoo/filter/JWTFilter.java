@@ -23,7 +23,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final List<String> excludedPaths;
-
     private final CustomUserDetailService customUserDetailService;
 
     @Autowired

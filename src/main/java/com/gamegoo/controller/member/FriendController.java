@@ -55,8 +55,10 @@ public class FriendController {
         Long memberId = JWTUtil.getCurrentUserId();
         List<Friend> friends = friendService.searchFriendByQueryString(memberId, query);
 
-        List<friendInfoDTO> friendInfoDTOList = friends.stream()
-                .map(MemberConverter::toFriendInfoDto).collect(Collectors.toList());
+        List<friendInfoDTO> friendInfoDTOList = friends
+                .stream()
+                .map(MemberConverter::toFriendInfoDto)
+                .collect(Collectors.toList());
 
         return ApiResponse.onSuccess(friendInfoDTOList);
     }
