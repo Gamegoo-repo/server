@@ -1,15 +1,5 @@
 package com.gamegoo.integration.chat;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-
 import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import com.gamegoo.apiPayload.exception.GeneralException;
 import com.gamegoo.domain.board.Board;
@@ -31,12 +21,6 @@ import com.gamegoo.service.chat.ChatCommandService;
 import com.gamegoo.service.member.BlockService;
 import com.gamegoo.service.member.ProfileService;
 import com.gamegoo.service.socket.SocketService;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -49,6 +33,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
@@ -83,15 +84,10 @@ public class ChatServiceTest {
     private BoardRepository boardRepository;
 
     private Member member1;
-
     private Member member2;
-
     private Member member3;
-
     private Member blindMember;
-
     private Member systemMember;
-
     private Board member2Board;
 
     private static final String POST_SYSTEM_MESSAGE_TO_MEMBER_INIT = "상대방이 게시한 글을 보고 말을 걸었어요. 대화를 시작해보세요~";
@@ -104,77 +100,77 @@ public class ChatServiceTest {
         // 기본 테스트에 사용할 멤버 객체를 미리 생성
         int randomProfileImage = ThreadLocalRandom.current().nextInt(1, 9);
         member1 = Member.builder()
-            .id(1L)
-            .email("test@mail.com")
-            .password("12345678")
-            .loginType(LoginType.GENERAL)
-            .profileImage(randomProfileImage)
-            .blind(false)
-            .mike(false)
-            .mannerLevel(1)
-            .isAgree(true)
-            .blockList(new ArrayList<>())
-            .memberChatroomList(new ArrayList<>())
-            .boardList(new ArrayList<>())
-            .build();
+                .id(1L)
+                .email("test@mail.com")
+                .password("12345678")
+                .loginType(LoginType.GENERAL)
+                .profileImage(randomProfileImage)
+                .blind(false)
+                .mike(false)
+                .mannerLevel(1)
+                .isAgree(true)
+                .blockList(new ArrayList<>())
+                .memberChatroomList(new ArrayList<>())
+                .boardList(new ArrayList<>())
+                .build();
 
         member2 = Member.builder()
-            .id(2L)
-            .email("test2@mail.com")
-            .password("12345678")
-            .loginType(LoginType.GENERAL)
-            .profileImage(randomProfileImage)
-            .blind(false)
-            .mike(false)
-            .mannerLevel(1)
-            .isAgree(true)
-            .blockList(new ArrayList<>())
-            .memberChatroomList(new ArrayList<>())
-            .boardList(new ArrayList<>())
-            .build();
+                .id(2L)
+                .email("test2@mail.com")
+                .password("12345678")
+                .loginType(LoginType.GENERAL)
+                .profileImage(randomProfileImage)
+                .blind(false)
+                .mike(false)
+                .mannerLevel(1)
+                .isAgree(true)
+                .blockList(new ArrayList<>())
+                .memberChatroomList(new ArrayList<>())
+                .boardList(new ArrayList<>())
+                .build();
 
         member3 = Member.builder()
-            .id(3L)
-            .email("test3@mail.com")
-            .password("12345678")
-            .loginType(LoginType.GENERAL)
-            .profileImage(randomProfileImage)
-            .blind(false)
-            .mike(false)
-            .mannerLevel(1)
-            .isAgree(true)
-            .blockList(new ArrayList<>())
-            .memberChatroomList(new ArrayList<>())
-            .boardList(new ArrayList<>())
-            .build();
+                .id(3L)
+                .email("test3@mail.com")
+                .password("12345678")
+                .loginType(LoginType.GENERAL)
+                .profileImage(randomProfileImage)
+                .blind(false)
+                .mike(false)
+                .mannerLevel(1)
+                .isAgree(true)
+                .blockList(new ArrayList<>())
+                .memberChatroomList(new ArrayList<>())
+                .boardList(new ArrayList<>())
+                .build();
 
         blindMember = Member.builder()
-            .id(1000L)
-            .email("blind@mail.com")
-            .password("12345678")
-            .loginType(LoginType.GENERAL)
-            .profileImage(randomProfileImage)
-            .blind(true)
-            .mike(false)
-            .mannerLevel(1)
-            .isAgree(true)
-            .blockList(new ArrayList<>())
-            .memberChatroomList(new ArrayList<>())
-            .build();
+                .id(1000L)
+                .email("blind@mail.com")
+                .password("12345678")
+                .loginType(LoginType.GENERAL)
+                .profileImage(randomProfileImage)
+                .blind(true)
+                .mike(false)
+                .mannerLevel(1)
+                .isAgree(true)
+                .blockList(new ArrayList<>())
+                .memberChatroomList(new ArrayList<>())
+                .build();
 
         systemMember = Member.builder()
-            .id(0L)
-            .email("system@mail.com")
-            .password("12345678")
-            .loginType(LoginType.GENERAL)
-            .profileImage(randomProfileImage)
-            .blind(false)
-            .mike(false)
-            .mannerLevel(1)
-            .isAgree(true)
-            .blockList(new ArrayList<>())
-            .memberChatroomList(new ArrayList<>())
-            .build();
+                .id(0L)
+                .email("system@mail.com")
+                .password("12345678")
+                .loginType(LoginType.GENERAL)
+                .profileImage(randomProfileImage)
+                .blind(false)
+                .mike(false)
+                .mannerLevel(1)
+                .isAgree(true)
+                .blockList(new ArrayList<>())
+                .memberChatroomList(new ArrayList<>())
+                .build();
 
         member1 = memberRepository.save(member1);
         member2 = memberRepository.save(member2);
@@ -183,16 +179,16 @@ public class ChatServiceTest {
         systemMember = memberRepository.save(systemMember);
 
         member2Board = Board.builder()
-            .mode(1)
-            .mainPosition(1)
-            .subPosition(1)
-            .wantPosition(1)
-            .mike(true)
-            .boardGameStyles(new ArrayList<>())
-            .content("content")
-            .boardProfileImage(1)
+                .mode(1)
+                .mainPosition(1)
+                .subPosition(1)
+                .wantPosition(1)
+                .mike(true)
+                .boardGameStyles(new ArrayList<>())
+                .content("content")
+                .boardProfileImage(1)
                 .deleted(false)
-            .build();
+                .build();
         member2Board.setMember(member2);
         member2Board = boardRepository.save(member2Board);
 
@@ -217,7 +213,7 @@ public class ChatServiceTest {
             public void startChatroomByMemberIdSucceedsWhenNoExistingChatroom() throws Exception {
                 // when
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -226,14 +222,14 @@ public class ChatServiceTest {
 
                 // 2. 데이터베이스에서 채팅방이 실제로 생성되었는지 검증
                 Optional<Chatroom> createdChatroom = chatroomRepository.findByUuid(
-                    chatroomEnterDTO.getUuid());
+                        chatroomEnterDTO.getUuid());
                 assertTrue(createdChatroom.isPresent());
 
                 // 3. MemberChatroom 엔티티가 각 회원에 대해 잘 생성되었는지 검증
                 Optional<MemberChatroom> member1Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), createdChatroom.get().getId());
+                        member1.getId(), createdChatroom.get().getId());
                 Optional<MemberChatroom> member2Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member2.getId(), createdChatroom.get().getId());
+                        member2.getId(), createdChatroom.get().getId());
 
                 assertTrue(member1Chatroom.isPresent());
                 assertTrue(member2Chatroom.isPresent());
@@ -245,11 +241,11 @@ public class ChatServiceTest {
             public void startChatroomByMemberIdSucceedsWhenExistingChatroom() throws Exception {
                 //given
                 ChatroomEnterDTO beforeChatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 // when
                 ChatroomEnterDTO afterChatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -258,7 +254,7 @@ public class ChatServiceTest {
 
                 // 2. 기존에 존재하던 채팅방에 입장된 것인지 검증
                 assertTrue(
-                    beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
+                        beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
 
                 // 3. chatroomRepository에 1개의 데이터만 있는지 검증
                 assertTrue(chatroomRepository.count() == 1);
@@ -269,17 +265,17 @@ public class ChatServiceTest {
             @Order(3)
             @DisplayName("3. 기존 채팅방 있음 && 상대방이 나를 차단 && 이미 입장한 채팅방인 경우")
             public void startChatroomByMemberIdSucceedsWhenExistChatroomAndBlockedAndEntered()
-                throws Exception {
+                    throws Exception {
                 // given
                 // 기존 채팅방 생성
                 ChatroomEnterDTO oldChatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 Chatroom beforeChatroom = chatroomRepository.findByUuid(
-                    oldChatroomEnterDTO.getUuid()).get();
+                        oldChatroomEnterDTO.getUuid()).get();
 
                 MemberChatroom beforeMemberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), beforeChatroom.getId()).get();
+                        member1.getId(), beforeChatroom.getId()).get();
 
                 // 해당 채팅방 입장 처리
                 beforeMemberChatroom.updateLastJoinDate(LocalDateTime.now());
@@ -292,7 +288,7 @@ public class ChatServiceTest {
 
                 // when
                 ChatroomEnterDTO newChatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -302,12 +298,13 @@ public class ChatServiceTest {
 
                 // 2. MemberChatroom 엔티티가 잘 업데이트 되었는지 확인
                 MemberChatroom afterMemberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                        member1.getId(), beforeChatroom.getId())
-                    .orElseThrow(() -> new IllegalStateException("MemberChatroom not found"));
+                                member1.getId(), beforeChatroom.getId())
+                        .orElseThrow(() -> new IllegalStateException("MemberChatroom not found"));
 
                 // 3. MemberChatroom의 lastViewDate가 업데이트 되었는지 검증
                 assertTrue(beforeLastViewDate.isBefore(afterMemberChatroom.getLastViewDate()));
             }
+
         }
 
         @Nested
@@ -357,7 +354,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByMemberId(member1.getId(),
-                        blindMember.getId());
+                            blindMember.getId());
                 });
 
                 // then
@@ -368,7 +365,7 @@ public class ChatServiceTest {
             @Order(7)
             @DisplayName("7. 기존 채팅방 없음 && 내가 상대방을 차단한 경우")
             public void startChatroomByMemberIdFailsWhenNoExistingChatroomAndBlock()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
 
@@ -388,7 +385,7 @@ public class ChatServiceTest {
             @Order(8)
             @DisplayName("8. 기존 채팅방 없음 && 상대방이 나를 차단한 경우")
             public void startChatroomByMemberIdFailsWhenNoExistingChatroomAndBlocked()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
 
@@ -408,12 +405,12 @@ public class ChatServiceTest {
             @Order(9)
             @DisplayName("9. 기존 채팅방 있음 && 상대방이 나를 차단 && 이미 퇴장한 채팅방인 경우")
             public void startChatroomByMemberIdFailsWhenBlockedAndExitedChatroomExists()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 // 기존 채팅방 먼저 생성
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByMemberId(
-                    member1.getId(), member2.getId());
+                        member1.getId(), member2.getId());
 
                 // member2 -> member1 차단
                 Member blockerMember = blockService.blockMember(member2.getId(), member1.getId());
@@ -424,7 +421,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByMemberId(member1.getId(),
-                        blockerMember.getId());
+                            blockerMember.getId());
                 });
 
                 // then
@@ -448,14 +445,16 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByMemberId(blockerMember.getId(),
-                        member2.getId());
+                            member2.getId());
                 });
 
                 // then
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
 
     @Nested
@@ -473,7 +472,7 @@ public class ChatServiceTest {
             public void startChatroomByBoardIdSucceedsWhenNoExistingChatroom() throws Exception {
                 // when
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -484,14 +483,14 @@ public class ChatServiceTest {
 
                 // 2. 데이터베이스에서 채팅방이 실제로 생성되었는지 검증
                 Optional<Chatroom> createdChatroom = chatroomRepository.findByUuid(
-                    chatroomEnterDTO.getUuid());
+                        chatroomEnterDTO.getUuid());
                 assertTrue(createdChatroom.isPresent());
 
                 // 3. MemberChatroom 엔티티가 각 회원에 대해 잘 생성되었는지 검증
                 Optional<MemberChatroom> member1Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), createdChatroom.get().getId());
+                        member1.getId(), createdChatroom.get().getId());
                 Optional<MemberChatroom> member2Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member2.getId(), createdChatroom.get().getId());
+                        member2.getId(), createdChatroom.get().getId());
 
                 assertTrue(member1Chatroom.isPresent());
                 assertTrue(member2Chatroom.isPresent());
@@ -502,16 +501,16 @@ public class ChatServiceTest {
             @Order(12)
             @DisplayName("12. 기존 채팅방 있음 && 이미 입장한 채팅방인 경우")
             public void startChatroomByBoardIdSucceedsWhenExistingChatroomAndEntered()
-                throws Exception {
+                    throws Exception {
                 //given
                 ChatroomEnterDTO beforeChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 Chatroom beforeChatroom = chatroomRepository.findByUuid(
-                    beforeChatroomEnterDTO.getUuid()).get();
+                        beforeChatroomEnterDTO.getUuid()).get();
 
                 MemberChatroom beforeMemberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), beforeChatroom.getId()).get();
+                        member1.getId(), beforeChatroom.getId()).get();
 
                 // 해당 채팅방 입장 처리
                 beforeMemberChatroom.updateLastJoinDate(LocalDateTime.now());
@@ -519,7 +518,7 @@ public class ChatServiceTest {
 
                 // when
                 ChatroomEnterDTO afterChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -530,7 +529,7 @@ public class ChatServiceTest {
 
                 // 2. 기존에 존재하던 채팅방에 입장된 것인지 검증
                 assertTrue(
-                    beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
+                        beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
 
                 // 3. chatroomRepository에 1개의 데이터만 있는지 검증
                 assertTrue(chatroomRepository.count() == 1);
@@ -543,11 +542,11 @@ public class ChatServiceTest {
             public void startChatroomByBoardIdSucceedsWhenExistingChatroom() throws Exception {
                 //given
                 ChatroomEnterDTO beforeChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // when
                 ChatroomEnterDTO afterChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -558,7 +557,7 @@ public class ChatServiceTest {
 
                 // 2. 기존에 존재하던 채팅방에 입장된 것인지 검증
                 assertTrue(
-                    beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
+                        beforeChatroomEnterDTO.getUuid().equals(afterChatroomEnterDTO.getUuid()));
 
                 // 3. chatroomRepository에 1개의 데이터만 있는지 검증
                 assertTrue(chatroomRepository.count() == 1);
@@ -569,17 +568,17 @@ public class ChatServiceTest {
             @Order(14)
             @DisplayName("14. 기존 채팅방 있음 && 상대방이 나를 차단 && 이미 입장한 채팅방인 경우")
             public void startChatroomByBoardIdSucceedsWhenExistChatroomAndBlockedAndEntered()
-                throws Exception {
+                    throws Exception {
                 // given
                 // 기존 채팅방 생성
                 ChatroomEnterDTO oldChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 Chatroom beforeChatroom = chatroomRepository.findByUuid(
-                    oldChatroomEnterDTO.getUuid()).get();
+                        oldChatroomEnterDTO.getUuid()).get();
 
                 MemberChatroom beforeMemberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), beforeChatroom.getId()).get();
+                        member1.getId(), beforeChatroom.getId()).get();
 
                 // 해당 채팅방 입장 처리
                 beforeMemberChatroom.updateLastJoinDate(LocalDateTime.now());
@@ -592,7 +591,7 @@ public class ChatServiceTest {
 
                 // when
                 ChatroomEnterDTO newChatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // then
                 // 1. ChatroomEnterDTO의 값 검증
@@ -603,12 +602,13 @@ public class ChatServiceTest {
 
                 // 2. MemberChatroom 엔티티가 잘 업데이트 되었는지 확인
                 MemberChatroom afterMemberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                        member1.getId(), beforeChatroom.getId())
-                    .orElseThrow(() -> new IllegalStateException("MemberChatroom not found"));
+                                member1.getId(), beforeChatroom.getId())
+                        .orElseThrow(() -> new IllegalStateException("MemberChatroom not found"));
 
                 // 3. MemberChatroom의 lastViewDate가 업데이트 되었는지 검증
                 assertTrue(beforeLastViewDate.isBefore(afterMemberChatroom.getLastViewDate()));
             }
+
         }
 
         @Nested
@@ -643,7 +643,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member2.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
@@ -662,7 +662,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member1.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
@@ -674,7 +674,7 @@ public class ChatServiceTest {
             @Order(18)
             @DisplayName("18. 기존 채팅방 없음 && 내가 상대방을 차단한 경우")
             public void startChatroomByBoardIdFailsWhenNoExistingChatroomAndBlock()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_CHAT_TARGET_IS_BLOCKED;
                 blockService.blockMember(member1.getId(), member2.getId());
@@ -682,7 +682,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member1.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
@@ -694,7 +694,7 @@ public class ChatServiceTest {
             @Order(19)
             @DisplayName("19. 기존 채팅방 없음 && 상대방이 나를 차단한 경우")
             public void startChatroomByBoardIdFailsWhenNoExistingChatroomAndBlocked()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 blockService.blockMember(member2.getId(), member1.getId());
@@ -702,7 +702,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member1.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
@@ -714,12 +714,12 @@ public class ChatServiceTest {
             @Order(20)
             @DisplayName("20. 기존 채팅방 있음 && 상대방이 나를 차단 && 이미 퇴장한 채팅방인 경우")
             public void startChatroomByBoardIdFailsWhenBlockedAndExitedChatroomExists()
-                throws Exception {
+                    throws Exception {
                 // given
                 ErrorStatus expectedErrorCode = ErrorStatus.CHAT_START_FAILED_BLOCKED_BY_CHAT_TARGET;
                 // 기존 채팅방 먼저 생성
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.startChatroomByBoardId(
-                    member1.getId(), member2Board.getId());
+                        member1.getId(), member2Board.getId());
 
                 // member2 -> member1 차단
                 Member blockerMember = blockService.blockMember(member2.getId(), member1.getId());
@@ -730,7 +730,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member1.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
@@ -750,13 +750,14 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByBoardId(member1.getId(),
-                        member2Board.getId());
+                            member2Board.getId());
                 });
 
                 // then
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
 
 
@@ -780,7 +781,7 @@ public class ChatServiceTest {
 
                 // when
                 String uuid = chatCommandService.startChatroomByMatching(member1.getId(),
-                    member2.getId());
+                        member2.getId());
 
                 // then
                 // 1. 데이터베이스에서 채팅방이 실제로 생성되었는지 검증
@@ -789,9 +790,9 @@ public class ChatServiceTest {
 
                 // 2. MemberChatroom 엔티티가 각 회원에 대해 잘 생성되었는지 검증
                 Optional<MemberChatroom> member1Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), createdChatroom.get().getId());
+                        member1.getId(), createdChatroom.get().getId());
                 Optional<MemberChatroom> member2Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member2.getId(), createdChatroom.get().getId());
+                        member2.getId(), createdChatroom.get().getId());
 
                 assertTrue(member1Chatroom.isPresent());
                 assertTrue(member2Chatroom.isPresent());
@@ -818,40 +819,40 @@ public class ChatServiceTest {
             @Order(23)
             @DisplayName("23. 기존 채팅방 있음 && 내가 입장한 채팅방인 경우")
             public void startChatroomByMatchingSucceedsWhenExistingChatroomAndEntered()
-                throws Exception {
+                    throws Exception {
                 // given
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(LocalDateTime.now())
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(LocalDateTime.now())
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom1);
 
                 // when
                 String uuid = chatCommandService.startChatroomByMatching(member1.getId(),
-                    member2.getId());
+                        member2.getId());
 
                 // then
                 // 1. member2의 MemberChatroom의 lastJoinDate 검증
                 Optional<MemberChatroom> member2Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member2.getId(), savedChatroom.getId());
+                        member2.getId(), savedChatroom.getId());
                 assertNotNull(member2Chatroom.get().getLastJoinDate());
 
                 // 2. systemChat 전송 검증
@@ -875,36 +876,36 @@ public class ChatServiceTest {
                 // given
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom1);
 
                 // when
                 String uuid = chatCommandService.startChatroomByMatching(member1.getId(),
-                    member2.getId());
+                        member2.getId());
 
                 // then
                 // 1. member1의 MemberChatroom의 lastJoinDate 검증
                 Optional<MemberChatroom> member1Chatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), savedChatroom.getId());
+                        member1.getId(), savedChatroom.getId());
                 assertNotNull(member1Chatroom.get().getLastJoinDate());
 
                 // 2. systemChat 전송 검증
@@ -920,6 +921,7 @@ public class ChatServiceTest {
                 assertEquals(chats.get(0).getContents(), MATCHING_SYSTEM_MESSAGE);
                 assertEquals(chats.get(1).getContents(), MATCHING_SYSTEM_MESSAGE);
             }
+
         }
 
         @Nested
@@ -953,7 +955,7 @@ public class ChatServiceTest {
                 // when
                 GeneralException exception = assertThrows(GeneralException.class, () -> {
                     chatCommandService.startChatroomByMatching(member1.getId(),
-                        blindMember.getId());
+                            blindMember.getId());
                 });
 
                 // then
@@ -999,7 +1001,9 @@ public class ChatServiceTest {
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
 
     @Nested
@@ -1019,31 +1023,31 @@ public class ChatServiceTest {
                 // given
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom1);
 
                 // when
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.enterChatroom(
-                    savedChatroom.getUuid(), member1.getId());
+                        savedChatroom.getUuid(), member1.getId());
 
                 // then
                 // 1. 입장한 채팅방 uuid 검증
@@ -1051,7 +1055,7 @@ public class ChatServiceTest {
 
                 // 2. lastViewDate update 검증
                 MemberChatroom memberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), savedChatroom.getId()).get();
+                        member1.getId(), savedChatroom.getId()).get();
                 assertNotNull(memberChatroom.getLastViewDate());
 
                 // 3. 응답 dto 상대 회원 검증
@@ -1065,25 +1069,25 @@ public class ChatServiceTest {
                 // given
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom1);
 
@@ -1092,7 +1096,7 @@ public class ChatServiceTest {
 
                 // when
                 ChatroomEnterDTO chatroomEnterDTO = chatCommandService.enterChatroom(
-                    savedChatroom.getUuid(), member1.getId());
+                        savedChatroom.getUuid(), member1.getId());
 
                 // then
                 // 1. 입장한 채팅방 uuid 검증
@@ -1100,12 +1104,13 @@ public class ChatServiceTest {
 
                 // 2. lastViewDate update 검증
                 MemberChatroom memberChatroom = memberChatroomRepository.findByMemberIdAndChatroomId(
-                    member1.getId(), savedChatroom.getId()).get();
+                        member1.getId(), savedChatroom.getId()).get();
                 assertNotNull(memberChatroom.getLastViewDate());
 
                 // 3. 응답 dto 상대 회원 검증
                 assertEquals(chatroomEnterDTO.getMemberId(), member2.getId());
             }
+
         }
 
         @Nested
@@ -1142,25 +1147,25 @@ public class ChatServiceTest {
                 // member2, member3 사이 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
                 MemberChatroom memberChatroom3 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom3.setMember(member3);
                 memberChatroomRepository.save(memberChatroom3);
 
@@ -1183,25 +1188,25 @@ public class ChatServiceTest {
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1227,25 +1232,25 @@ public class ChatServiceTest {
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 Chatroom savedChatroom = chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1261,7 +1266,9 @@ public class ChatServiceTest {
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
 
     @Nested
@@ -1282,29 +1289,29 @@ public class ChatServiceTest {
                 // 채팅방 생성 및 member1 입장
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom1 = memberChatroomRepository.save(
-                    memberChatroom1);
+                        memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 MemberChatroom savedMemberChatroom2 = memberChatroomRepository.save(
-                    memberChatroom2);
+                        memberChatroom2);
 
                 // 채팅 메시지 dto 생성
                 ChatRequest.ChatCreateRequest request = new ChatCreateRequest();
@@ -1335,29 +1342,29 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom1 = memberChatroomRepository.save(
-                    memberChatroom1);
+                        memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 MemberChatroom savedMemberChatroom2 = memberChatroomRepository.save(
-                    memberChatroom2);
+                        memberChatroom2);
 
                 // 채팅 메시지 dto 생성
                 ChatRequest.ChatCreateRequest request = new ChatCreateRequest();
@@ -1391,29 +1398,29 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom1 = memberChatroomRepository.save(
-                    memberChatroom1);
+                        memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 MemberChatroom savedMemberChatroom2 = memberChatroomRepository.save(
-                    memberChatroom2);
+                        memberChatroom2);
 
                 // 채팅 메시지 dto 생성
                 ChatRequest.ChatCreateRequest request = new ChatCreateRequest();
@@ -1466,29 +1473,29 @@ public class ChatServiceTest {
                 // 채팅방 생성 및 member1 입장
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom1 = memberChatroomRepository.save(
-                    memberChatroom1);
+                        memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 MemberChatroom savedMemberChatroom2 = memberChatroomRepository.save(
-                    memberChatroom2);
+                        memberChatroom2);
 
                 // 채팅 메시지 dto 생성
                 ChatRequest.ChatCreateRequest request = new ChatCreateRequest();
@@ -1529,6 +1536,7 @@ public class ChatServiceTest {
                 assertEquals(chats.get(1).getContents(), POST_SYSTEM_MESSAGE_TO_TARGET_MEMBER);
 
             }
+
         }
 
         @Nested
@@ -1571,25 +1579,25 @@ public class ChatServiceTest {
                 // member2, member3 사이 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
                 MemberChatroom memberChatroom3 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom3.setMember(member3);
                 memberChatroomRepository.save(memberChatroom3);
 
@@ -1617,25 +1625,25 @@ public class ChatServiceTest {
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1666,25 +1674,25 @@ public class ChatServiceTest {
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1715,25 +1723,25 @@ public class ChatServiceTest {
 
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(blindMember);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1751,7 +1759,9 @@ public class ChatServiceTest {
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
 
     @Nested
@@ -1772,25 +1782,25 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom = memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(blindMember);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1809,25 +1819,25 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 MemberChatroom savedMemberChatroom = memberChatroomRepository.save(memberChatroom2);
 
@@ -1845,6 +1855,7 @@ public class ChatServiceTest {
                 // then
                 assertEquals(savedMemberChatroom.getLastViewDate(), chat.getCreatedAt());
             }
+
         }
 
         @Nested
@@ -1881,25 +1892,25 @@ public class ChatServiceTest {
                 // member2, member3 사이 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
                 MemberChatroom memberChatroom3 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom3.setMember(member3);
                 memberChatroomRepository.save(memberChatroom3);
 
@@ -1923,25 +1934,25 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -1954,7 +1965,9 @@ public class ChatServiceTest {
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
 
     @Nested
@@ -1975,25 +1988,25 @@ public class ChatServiceTest {
                 // 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom1 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom1.setMember(member1);
                 MemberChatroom savedMemberChatroom = memberChatroomRepository.save(memberChatroom1);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
@@ -2003,6 +2016,7 @@ public class ChatServiceTest {
                 // then
                 assertNull(savedMemberChatroom.getLastJoinDate());
             }
+
         }
 
         @Nested
@@ -2039,25 +2053,25 @@ public class ChatServiceTest {
                 // member2, member3 사이 채팅방 생성
                 String newUuid = UUID.randomUUID().toString();
                 Chatroom newChatroom = Chatroom.builder()
-                    .uuid(newUuid)
-                    .startMember(null)
-                    .build();
+                        .uuid(newUuid)
+                        .startMember(null)
+                        .build();
 
                 chatroomRepository.save(newChatroom);
 
                 MemberChatroom memberChatroom2 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(null)
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(null)
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom2.setMember(member2);
                 memberChatroomRepository.save(memberChatroom2);
 
                 MemberChatroom memberChatroom3 = MemberChatroom.builder()
-                    .lastViewDate(null)
-                    .lastJoinDate(LocalDateTime.now())
-                    .chatroom(newChatroom)
-                    .build();
+                        .lastViewDate(null)
+                        .lastJoinDate(LocalDateTime.now())
+                        .chatroom(newChatroom)
+                        .build();
                 memberChatroom3.setMember(member3);
                 memberChatroomRepository.save(memberChatroom3);
 
@@ -2070,6 +2084,9 @@ public class ChatServiceTest {
                 assertEquals(expectedErrorCode, exception.getCode());
 
             }
+
         }
+
     }
+
 }

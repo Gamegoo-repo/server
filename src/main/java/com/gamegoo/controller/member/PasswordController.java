@@ -47,28 +47,27 @@ public class PasswordController {
     public ApiResponse<String> resetPasswordWithJWT(
             @Valid @RequestBody MemberRequest.PasswordRequestJWTDTO passwordRequestDTO) {
         Long currentUserId = JWTUtil.getCurrentUserId();
-        passwordService.updatePasswordById(currentUserId, passwordRequestDTO.getOldPassword(), passwordRequestDTO.getNewPassword());
+        passwordService.updatePasswordById(currentUserId, passwordRequestDTO.getOldPassword(),
+                passwordRequestDTO.getNewPassword());
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
 
     @PostMapping("/reset")
     @Operation(summary = "비밀번호 재설정 API 입니다.", description = "API for reseting password")
-    public ApiResponse<String> resetPassword(
-            @Valid @RequestBody MemberRequest.PasswordRequestDTO passwordRequestDTO) {
+    public ApiResponse<String> resetPassword(@Valid @RequestBody MemberRequest.PasswordRequestDTO passwordRequestDTO) {
         // dto
         String email = passwordRequestDTO.getEmail();
         String verifyCode = passwordRequestDTO.getVerifyCode();
         String newPassword = passwordRequestDTO.getNewPassword();
 
         // 인증코드 검증
-        authService.verifyCode(email,verifyCode);
+        authService.verifyCode(email, verifyCode);
 
         // 비밀번호 재설정
         passwordService.updatePasswordWithEmail(email, newPassword);
 
         return ApiResponse.onSuccess("비밀번호 재설정을 완료했습니다.");
     }
-
 
 }

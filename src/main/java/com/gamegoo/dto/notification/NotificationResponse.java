@@ -1,11 +1,12 @@
 package com.gamegoo.dto.notification;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class NotificationResponse {
 
@@ -19,6 +20,7 @@ public class NotificationResponse {
         Integer list_size;
         Boolean has_next;
         Long next_cursor;
+
     }
 
     @Builder
@@ -33,6 +35,7 @@ public class NotificationResponse {
         Long totalElements;
         Boolean isFirst;
         Boolean isLast;
+
     }
 
     @Builder
@@ -47,6 +50,7 @@ public class NotificationResponse {
         String pageUrl;
         Boolean read;
         LocalDateTime createdAt;
+
     }
 
     @Builder
@@ -57,6 +61,7 @@ public class NotificationResponse {
 
         Long notificationId;
         String message;
+
     }
 
 }

@@ -4,23 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamegoo.apiPayload.ApiResponse;
 import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import io.jsonwebtoken.JwtException;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
-
+                                    FilterChain filterChain) throws ServletException, IOException {
         String requestId = UUID.randomUUID().toString();  // 고유한 requestId 생성
         String requestUrl = request.getRequestURI();
         String httpMethod = request.getMethod();  // HTTP 메소드 추출
@@ -34,16 +34,16 @@ public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
 
             if (Objects.equals(e.getMessage(), "Token expired")) {
                 setErrorResponse(response, ErrorStatus.TOKEN_EXPIRED, requestId, httpMethod,
-                    requestUrl, clientIp, memberId, userAgent);
+                        requestUrl, clientIp, memberId, userAgent);
             } else if (Objects.equals(e.getMessage(), "Token null")) {
                 setErrorResponse(response, ErrorStatus.TOKEN_NULL, requestId, httpMethod,
-                    requestUrl, clientIp, memberId, userAgent);
+                        requestUrl, clientIp, memberId, userAgent);
             } else if (Objects.equals(e.getMessage(), "No Member")) {
                 setErrorResponse(response, ErrorStatus.MEMBER_NOT_FOUND, requestId, httpMethod,
-                    requestUrl, clientIp, memberId, userAgent);
+                        requestUrl, clientIp, memberId, userAgent);
             } else {
                 setErrorResponse(response, ErrorStatus.INVALID_TOKEN, requestId, httpMethod,
-                    requestUrl, clientIp, memberId, userAgent);
+                        requestUrl, clientIp, memberId, userAgent);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -51,20 +51,19 @@ public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
     }
 
     private void setErrorResponse(HttpServletResponse response, ErrorStatus errorStatus,
-        String requestId, String httpMethod, String requestUrl, String clientIp, String memberId,
-        String userAgent)
-        throws IOException {
+                                  String requestId, String httpMethod, String requestUrl, String clientIp,
+                                  String memberId,
+                                  String userAgent) throws IOException {
         // 에러 응답 생성하기
-        ApiResponse<Object> apiResponse = ApiResponse.onFailure(errorStatus.getCode(),
-            errorStatus.getMessage(), null);
+        ApiResponse<Object> apiResponse = ApiResponse.onFailure(errorStatus.getCode(), errorStatus.getMessage(), null);
         response.setStatus(errorStatus.getHttpStatus().value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Status: {} | User-Agent: {}",
-            requestId,
-            httpMethod, requestUrl, clientIp, memberId,
-            errorStatus.getHttpStatus().value() + " " + errorStatus.getMessage(), userAgent);
+                requestId,
+                httpMethod, requestUrl, clientIp, memberId,
+                errorStatus.getHttpStatus().value() + " " + errorStatus.getMessage(), userAgent);
 
         new ObjectMapper().writeValue(response.getWriter(), apiResponse);
     }
@@ -75,6 +74,7 @@ public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
         if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
             return ip.split(",")[0].trim();
         }
+
         return request.getRemoteAddr();
     }
 
@@ -82,5 +82,6 @@ public class JWTExceptionHandlerFilter extends OncePerRequestFilter {
     private String getUserAgent(HttpServletRequest request) {
         return request.getHeader("User-Agent");
     }
+
 }
 

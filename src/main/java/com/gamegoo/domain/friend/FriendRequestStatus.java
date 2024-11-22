@@ -5,5 +5,4 @@ public enum FriendRequestStatus {
     ACCEPTED,   // 수락됨
     REJECTED,   // 거절됨
     CANCELLED   // 취소됨
-
 }

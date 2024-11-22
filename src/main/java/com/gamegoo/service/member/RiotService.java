@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class RiotService {
+
     private final RiotUtil riotUtil;
 
     /**
@@ -25,17 +26,15 @@ public class RiotService {
     public String verifyRiot(String gameName, String tag) {
         String riotPuuid = riotUtil.getRiotPuuid(gameName, tag);
 
-        if (riotPuuid == null) {
+        if (riotPuuid==null) {
             throw new MemberHandler(ErrorStatus.RIOT_NOT_FOUND);
         }
 
         String summonerId = riotUtil.getSummonerId(riotPuuid);
 
-        if (summonerId == null) {
+        if (summonerId==null) {
             throw new MemberHandler(ErrorStatus.RIOT_NOT_FOUND);
         }
-
-
 
         return riotPuuid;
     }

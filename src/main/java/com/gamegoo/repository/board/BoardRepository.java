@@ -3,17 +3,17 @@ package com.gamegoo.repository.board;
 import com.gamegoo.domain.board.Board;
 import com.gamegoo.domain.member.Tier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BoardRepository extends JpaRepository<Board,Long>{
+public interface BoardRepository extends JpaRepository<Board, Long> {
+
     Page<Board> findByMemberIdAndDeletedFalse(Long memberId, Pageable pageable);
 
     @Query("SELECT b From Board b JOIN b.member m WHERE" +
@@ -23,9 +23,9 @@ public interface BoardRepository extends JpaRepository<Board,Long>{
             "(:mainPosition IS NULL OR b.mainPosition = :mainPosition) AND " +
             "(:mike IS NULL OR b.mike = :mike)")
     List<Board> findByFilter(@Param("mode") Integer mode,
-                              @Param("tier") Tier tier,
-                              @Param("mainPosition") Integer mainPosition,
-                              @Param("mike") Boolean mike);
+                             @Param("tier") Tier tier,
+                             @Param("mainPosition") Integer mainPosition,
+                             @Param("mike") Boolean mike);
 
     @Query("SELECT b From Board b JOIN b.member m WHERE" +
             "(b.deleted = false) AND " +
@@ -47,4 +47,5 @@ public interface BoardRepository extends JpaRepository<Board,Long>{
     List<Board> findByMemberIdAndDeletedFalse(Long memberId);
 
     List<Board> findAllByDeletedFalse();
+
 }

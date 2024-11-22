@@ -15,6 +15,7 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Champion {
+
     @Id
     @Column(name = "id", nullable = false)
     private Long id;

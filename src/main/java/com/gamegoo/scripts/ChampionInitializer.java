@@ -16,6 +16,7 @@ import java.io.InputStream;
 @Component
 @RequiredArgsConstructor
 public class ChampionInitializer implements ApplicationListener<ApplicationReadyEvent> {
+
     private final ChampionRepository championRepository;
 
     @Override
@@ -54,4 +55,5 @@ public class ChampionInitializer implements ApplicationListener<ApplicationReady
             championRepository.save(champion);
         }
     }
+
 }

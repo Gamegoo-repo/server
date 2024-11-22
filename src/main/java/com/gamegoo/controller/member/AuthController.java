@@ -36,6 +36,7 @@ public class AuthController {
         Boolean isAgree = joinRequestDTO.getIsAgree();
 
         Member member = authService.joinMember(email, password, gameName, tag, isAgree);
+
         return ApiResponse.onSuccess(MemberConverter.toMyProfileDTO(member));
     }
 
@@ -47,50 +48,48 @@ public class AuthController {
 
         authService.verifyEmailforNewUser(email);
         authService.sendEmailVerification(email);
+
         return ApiResponse.onSuccess("인증 이메일을 발송했습니다.");
     }
 
     @PostMapping("/email/send")
     @Operation(summary = "이메일 인증코드 전송 API 입니다. 중복확인 X", description = "API for sending email")
-    public ApiResponse<String> sendEmail(
-            @Valid @RequestBody MemberRequest.EmailRequestDTO emailRequestDTO) {
+    public ApiResponse<String> sendEmail(@Valid @RequestBody MemberRequest.EmailRequestDTO emailRequestDTO) {
         String email = emailRequestDTO.getEmail();
         authService.sendEmailVerification(email);
+
         return ApiResponse.onSuccess("인증 이메일을 발송했습니다.");
     }
 
     @PostMapping("/email/send/user")
     @Operation(summary = "이메일 인증코드 전송 API 입니다. 겜구 회원 조회 전용", description = "API for sending email for exisiting user")
-    public ApiResponse<String> sendEmailforUser(
-            @Valid @RequestBody MemberRequest.EmailRequestDTO emailRequestDTO) {
+    public ApiResponse<String> sendEmailforUser(@Valid @RequestBody MemberRequest.EmailRequestDTO emailRequestDTO) {
         String email = emailRequestDTO.getEmail();
 
         // DB에 없는 사용자일 경우 에러 발생
         authService.verifyEmailforExistUser(email);
-
         authService.sendEmailVerification(email);
+
         return ApiResponse.onSuccess("인증 이메일을 발송했습니다.");
     }
 
     @PostMapping("/email/verify")
     @Operation(summary = "이메일 인증코드 검증 API 입니다.", description = "API for email verification")
-    public ApiResponse<String> verifyEmail(
-            @Valid @RequestBody MemberRequest.EmailCodeRequestDTO emailCodeRequestDTO) {
+    public ApiResponse<String> verifyEmail(@Valid @RequestBody MemberRequest.EmailCodeRequestDTO emailCodeRequestDTO) {
         String email = emailCodeRequestDTO.getEmail();
         String code = emailCodeRequestDTO.getCode();
+
         authService.verifyCode(email, code);
+
         return ApiResponse.onSuccess("인증코드 검증에 성공했습니다.");
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "refresh token을 통한 access, refresh token 재발급 API 입니다.", description = "API for Refresh Token")
-    public ApiResponse<Object> refreshTokens(
-            @RequestBody MemberRequest.RefreshTokenRequestDTO refreshTokenRequestDTO) {
-
+    public ApiResponse<Object> refreshTokens(@RequestBody MemberRequest.RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
 
-        MemberResponse.RefreshTokenResponseDTO refreshTokenResponseDTO = authService.verifyRefreshToken(
-                refreshToken);
+        MemberResponse.RefreshTokenResponseDTO refreshTokenResponseDTO = authService.verifyRefreshToken(refreshToken);
 
         return ApiResponse.onSuccess(refreshTokenResponseDTO);
     }
@@ -103,4 +102,5 @@ public class AuthController {
 
         return ApiResponse.onSuccess("로그아웃에 성공했습니다");
     }
+
 }

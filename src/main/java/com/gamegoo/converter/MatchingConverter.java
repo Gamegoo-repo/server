@@ -1,8 +1,8 @@
 package com.gamegoo.converter;
 
+import com.gamegoo.domain.member.Member;
 import com.gamegoo.dto.matching.MatchingRequest;
 import com.gamegoo.dto.matching.MatchingResponse;
-import com.gamegoo.domain.member.Member;
 import com.gamegoo.dto.matching.MemberPriority;
 import org.springframework.stereotype.Component;
 
@@ -20,21 +20,22 @@ public class MatchingConverter {
             List<String> gameStyleList) {
 
         // 내 매칭 기록 DTO 생성
-        MatchingResponse.matchingRequestResponseDTO myMatchingInfo = MatchingResponse.matchingRequestResponseDTO.builder()
-                .memberId(member.getId())
-                .gameName(member.getGameName())
-                .tag(member.getTag())
-                .tier(member.getTier())
-                .rank(member.getRank())
-                .mannerLevel(member.getMannerLevel())
-                .profileImg(member.getProfileImage())
-                .gameMode(request.getGameMode())
-                .mainPosition(request.getMainP())
-                .subPosition(request.getSubP())
-                .wantPosition(request.getWantP())
-                .mike(request.getMike())
-                .gameStyleList(gameStyleList)
-                .build();
+        MatchingResponse.matchingRequestResponseDTO myMatchingInfo =
+                MatchingResponse.matchingRequestResponseDTO.builder()
+                        .memberId(member.getId())
+                        .gameName(member.getGameName())
+                        .tag(member.getTag())
+                        .tier(member.getTier())
+                        .rank(member.getRank())
+                        .mannerLevel(member.getMannerLevel())
+                        .profileImg(member.getProfileImage())
+                        .gameMode(request.getGameMode())
+                        .mainPosition(request.getMainP())
+                        .subPosition(request.getSubP())
+                        .wantPosition(request.getWantP())
+                        .mike(request.getMike())
+                        .gameStyleList(gameStyleList)
+                        .build();
 
         // 최종 DTO 반환
         return MatchingResponse.PriorityMatchingResponseDTO.builder()
@@ -43,4 +44,5 @@ public class MatchingConverter {
                 .myMatchingInfo(myMatchingInfo)
                 .build();
     }
+
 }

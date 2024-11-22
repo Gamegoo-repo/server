@@ -23,15 +23,13 @@ public class RiotController {
 
     @PostMapping("/riot")
     @Operation(summary = "실제 존재하는 Riot 계정인지 검증하는 API", description = "API for verifying account by riot API")
-    public ApiResponse<String> VerifyRiot(
-            @RequestBody @Valid MemberRequest.verifyRiotRequestDTO verifyRiotRequestDTO) {
+    public ApiResponse<String> VerifyRiot(@RequestBody @Valid MemberRequest.verifyRiotRequestDTO verifyRiotRequestDTO) {
         String gameName = verifyRiotRequestDTO.getGameName();
         String tag = verifyRiotRequestDTO.getTag();
 
         riotService.verifyRiot(gameName, tag);
 
         return ApiResponse.onSuccess("해당 Riot 계정은 존재합니다.");
-
     }
 
 }

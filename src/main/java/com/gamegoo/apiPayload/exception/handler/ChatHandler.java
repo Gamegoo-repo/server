@@ -8,4 +8,5 @@ public class ChatHandler extends GeneralException {
     public ChatHandler(BaseErrorCode code) {
         super(code);
     }
+
 }

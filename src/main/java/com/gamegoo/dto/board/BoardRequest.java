@@ -10,9 +10,11 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class BoardRequest {
+
     @Getter
     @Setter
     public static class boardInsertDTO {
+
         Integer boardProfileImage;
         @NotNull
         Integer gameMode;
@@ -35,6 +37,7 @@ public class BoardRequest {
     @Getter
     @Setter
     public static class boardUpdateDTO {
+
         Integer boardProfileImage;
         Integer gameMode;
 
@@ -46,5 +49,7 @@ public class BoardRequest {
         Boolean mike;
         List<Long> gameStyles;
         String contents;
+
     }
+
 }

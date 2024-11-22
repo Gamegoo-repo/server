@@ -10,8 +10,10 @@ import org.springframework.web.client.RestTemplate;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AppConfig {
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 }

@@ -74,4 +74,5 @@ public class MatchingRecordInitializer implements ApplicationListener<Applicatio
         String ddlAuto = event.getApplicationContext().getEnvironment().getProperty("spring.jpa.hibernate.ddl-auto");
         return "create".equalsIgnoreCase(ddlAuto);
     }
+
 }

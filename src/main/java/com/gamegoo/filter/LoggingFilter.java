@@ -4,16 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamegoo.util.JWTUtil;
 import io.jsonwebtoken.JwtException;
-import java.io.IOException;
-import java.util.UUID;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 public class LoggingFilter extends OncePerRequestFilter {
@@ -26,8 +27,7 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain)
-        throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
         // /v1/member/login 경로에 대해서는 필터 pass
         String requestUrl = request.getRequestURI();
         if ("/v1/member/login".equals(requestUrl)) {
@@ -64,12 +64,11 @@ public class LoggingFilter extends OncePerRequestFilter {
             // 요청 로그 기록
             // 요청 로그 기록
             if (params != null && !params.isEmpty() && !params.equals("{}")) {
-                log.info(
-                    "[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Params: {} | User-Agent: {}",
-                    requestId, httpMethod, requestUrl, clientIp, memberId, params, userAgent);
+                log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Params: {} | User-Agent: {}",
+                        requestId, httpMethod, requestUrl, clientIp, memberId, params, userAgent);
             } else {
                 log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | User-Agent: {}",
-                    requestId, httpMethod, requestUrl, clientIp, memberId, userAgent);
+                        requestId, httpMethod, requestUrl, clientIp, memberId, userAgent);
             }
 
             // 실행 시간 측정을 위한 시작 시간
@@ -85,8 +84,8 @@ public class LoggingFilter extends OncePerRequestFilter {
 
             // 응답 로그 기록
             log.info("[requestId: {}] [{}] {} | IP: {} | Member ID: {} | Status: {}", requestId,
-                httpMethod, requestUrl,
-                clientIp, memberId, statusMessage);
+                    httpMethod, requestUrl,
+                    clientIp, memberId, statusMessage);
         } finally {
             MDC.remove("requestId");
         }
@@ -113,8 +112,9 @@ public class LoggingFilter extends OncePerRequestFilter {
     // 상태 코드에 맞는 메시지 반환
     private String getStatusMessage(int statusCode) {
         HttpStatus httpStatus = HttpStatus.resolve(statusCode);
-        return httpStatus != null ? statusCode + " " + httpStatus.getReasonPhrase()
-            : String.valueOf(statusCode);
+        return httpStatus != null
+                ? statusCode + " " + httpStatus.getReasonPhrase()
+                : String.valueOf(statusCode);
     }
 
     private String getParamsAsString(HttpServletRequest request) {
@@ -130,4 +130,5 @@ public class LoggingFilter extends OncePerRequestFilter {
     private String getUserAgent(HttpServletRequest request) {
         return request.getHeader("User-Agent");
     }
+
 }

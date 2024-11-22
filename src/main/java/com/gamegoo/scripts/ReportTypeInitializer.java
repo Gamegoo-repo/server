@@ -19,6 +19,7 @@ public class ReportTypeInitializer implements ApplicationListener<ApplicationRea
             initializeReportTypes();
         }
     }
+
     private boolean isCreateMode(ApplicationReadyEvent event) {
         // jpa.hibernate.ddl-auto 값이 create인지 확인
         String ddlAuto = event.getApplicationContext().getEnvironment().getProperty("spring.jpa.hibernate.ddl-auto");
@@ -40,4 +41,5 @@ public class ReportTypeInitializer implements ApplicationListener<ApplicationRea
             reportTypeRepository.save(reportType);
         }
     }
+
 }

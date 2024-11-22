@@ -39,9 +39,7 @@ public class TestController {
 
     @GetMapping("/test/send/notifications/{times}")
     @Operation(summary = "테스트용 알림 생성 API 입니다.", description = "서버 테스트용 입니다!!")
-    public ApiResponse<String> sendTestNotifications(
-            @PathVariable(name = "times") int times
-    ) {
+    public ApiResponse<String> sendTestNotifications(@PathVariable(name = "times") int times) {
         Long memberId = JWTUtil.getCurrentUserId();
         Member member = profileService.findMember(memberId);
 
@@ -49,6 +47,7 @@ public class TestController {
             notificationService.createNotification(NotificationTypeTitle.TEST_ALARM, null, null,
                     member);
         }
+
         return ApiResponse.onSuccess("테스트 알림 생성 성공");
     }
 

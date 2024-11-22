@@ -52,26 +52,26 @@ public class BlockService {
         MemberUtils.checkBlind(targetMember);
 
         // 이미 차단한 회원인지 검증
-        boolean isblocked = blockRepository.existsByBlockerMemberAndBlockedMember(member,
-            targetMember);
+        boolean isblocked = blockRepository.existsByBlockerMemberAndBlockedMember(member, targetMember);
         if (isblocked) {
             throw new BlockHandler(ErrorStatus.ALREADY_BLOCKED);
         }
 
         // block 엔티티 생성 및 연관관계 매핑
         Block block = Block.builder()
-            .isDeleted(false)
-            .blockedMember(targetMember)
-            .build();
+                .isDeleted(false)
+                .blockedMember(targetMember)
+                .build();
         block.setBlockerMember(member);
 
         blockRepository.save(block);
 
         // 차단 대상 회원과의 채팅방이 존재하는 경우, 해당 채팅방 퇴장 처리
-        chatQueryService.getChatroomByMembers(member, targetMember).ifPresent(chatroom -> {
-            // 채팅방 퇴장 처리
-            chatCommandService.exitChatroom(chatroom.getUuid(), member.getId());
-        });
+        chatQueryService.getChatroomByMembers(member, targetMember)
+                .ifPresent(chatroom -> {
+                    // 채팅방 퇴장 처리
+                    chatCommandService.exitChatroom(chatroom.getUuid(), member.getId());
+                });
 
         // 차단 대상 회원과 친구관계인 경우, 친구 관계 끊기
         friendService.removeFriendshipIfPresent(member, targetMember);
@@ -101,8 +101,7 @@ public class BlockService {
 
         PageRequest pageRequest = PageRequest.of(pageIdx, PAGE_SIZE);
 
-        return memberRepository.findBlockedMembersByBlockerIdAndNotDeleted(member.getId(),
-            pageRequest);
+        return memberRepository.findBlockedMembersByBlockerIdAndNotDeleted(member.getId(), pageRequest);
     }
 
     /**
@@ -123,7 +122,7 @@ public class BlockService {
 
         // targetMember가 차단 실제로 차단 목록에 존재하는지 검증
         Block block = blockRepository.findByBlockerMemberAndBlockedMember(member, targetMember)
-            .orElseThrow(() -> new BlockHandler(ErrorStatus.TARGET_MEMBER_NOT_BLOCKED));
+                .orElseThrow(() -> new BlockHandler(ErrorStatus.TARGET_MEMBER_NOT_BLOCKED));
 
         block.removeBlockerMember(member); // 양방향 연관관계 제거
         blockRepository.delete(block);
@@ -142,7 +141,7 @@ public class BlockService {
 
         // targetMember가 차단 실제로 차단 목록에 존재하는지 검증
         Block block = blockRepository.findByBlockerMemberAndBlockedMember(member, targetMember)
-            .orElseThrow(() -> new BlockHandler(ErrorStatus.TARGET_MEMBER_NOT_BLOCKED));
+                .orElseThrow(() -> new BlockHandler(ErrorStatus.TARGET_MEMBER_NOT_BLOCKED));
 
         // targetMember가 탈퇴한 회원이 맞는지 검증
         if (!targetMember.getBlind()) {
@@ -151,8 +150,6 @@ public class BlockService {
 
         // Block 엔티티의 isDeleted 업데이트
         block.updateIsDeleted(true);
-
     }
-
 
 }

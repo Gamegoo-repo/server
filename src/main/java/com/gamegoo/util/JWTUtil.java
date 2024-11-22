@@ -19,7 +19,8 @@ public class JWTUtil {
     private final SecretKey secretKey;
 
     public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
+                Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     public Long getId(String token) {
@@ -30,7 +31,6 @@ public class JWTUtil {
     }
 
     public String createJwtWithId(Long id, Long expiredMs) {
-
         return Jwts.builder()
                 .claim("id", id)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -40,7 +40,6 @@ public class JWTUtil {
     }
 
     public String createJwt(Long expiredMs) {
-
         return Jwts.builder()
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -57,10 +56,10 @@ public class JWTUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails memberDetails) {
-
             return memberDetails.getId();
         }
 
         return null; // or throw an exception if user is not authenticated
     }
+
 }
