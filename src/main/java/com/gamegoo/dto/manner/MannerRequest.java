@@ -13,6 +13,7 @@ public class MannerRequest {
 
     @Getter
     public static class mannerInsertDTO {
+
         @NotNull
         Long toMemberId;
 
@@ -26,7 +27,10 @@ public class MannerRequest {
     @Getter
     @Setter
     public static class mannerUpdateDTO {
+
         @NotEmpty
         List<Long> mannerRatingKeywordList;
+
     }
+
 }

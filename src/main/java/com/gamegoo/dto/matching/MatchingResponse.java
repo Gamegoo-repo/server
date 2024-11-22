@@ -2,11 +2,12 @@ package com.gamegoo.dto.matching;
 
 
 import com.gamegoo.domain.member.Tier;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 public class MatchingResponse {
 
@@ -19,6 +20,7 @@ public class MatchingResponse {
         List<MemberPriority> myPriorityList;
         List<MemberPriority> otherPriorityList;
         matchingRequestResponseDTO myMatchingInfo;
+
     }
 
     @Builder
@@ -29,6 +31,7 @@ public class MatchingResponse {
 
         matchingRequestResponseDTO myMatchingInfo;
         matchingRequestResponseDTO targetMatchingInfo;
+
     }
 
     @Builder
@@ -50,6 +53,7 @@ public class MatchingResponse {
         Integer wantPosition;
         Boolean mike;
         List<String> gameStyleList;
+
     }
 
 }

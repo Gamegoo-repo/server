@@ -8,14 +8,18 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 public class ReportResponse {
+
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class reportInsertResponseDTO{
+    public static class reportInsertResponseDTO {
+
         Long reportId;
         Long targetId;
         List<Long> reportTypeIdList;
         String contents;
+
     }
+
 }

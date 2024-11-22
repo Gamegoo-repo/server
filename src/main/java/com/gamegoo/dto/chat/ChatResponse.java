@@ -1,12 +1,13 @@
 package com.gamegoo.dto.chat;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 public class ChatResponse {
 
@@ -20,6 +21,7 @@ public class ChatResponse {
         Integer list_size;
         Boolean has_next;
         Long next_cursor;
+
     }
 
     @Builder
@@ -41,6 +43,7 @@ public class ChatResponse {
         String lastMsgAt;
         Integer notReadMsgCnt;
         Long lastMsgTimestamp;
+
     }
 
     @Builder
@@ -48,16 +51,16 @@ public class ChatResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonPropertyOrder({
-        "uuid",
-        "memberId",
-        "gameName",
-        "memberProfileImg",
-        "friend",
-        "blocked",
-        "blind",
-        "friendRequestMemberId",
-        "system",
-        "chatMessageList"
+            "uuid",
+            "memberId",
+            "gameName",
+            "memberProfileImg",
+            "friend",
+            "blocked",
+            "blind",
+            "friendRequestMemberId",
+            "system",
+            "chatMessageList"
     })
     public static class ChatroomEnterDTO {
 
@@ -84,6 +87,7 @@ public class ChatResponse {
         Integer list_size;
         Boolean has_next;
         Long next_cursor;
+
     }
 
     @SuperBuilder
@@ -98,6 +102,7 @@ public class ChatResponse {
         String message;
         String createdAt;
         Long timestamp;
+
     }
 
     @SuperBuilder
@@ -108,6 +113,7 @@ public class ChatResponse {
 
         Integer systemType;
         Long boardId;
+
     }
 
     @Builder
@@ -122,6 +128,7 @@ public class ChatResponse {
         String message;
         String createdAt;
         Long timestamp;
+
     }
 
     @Builder
@@ -132,5 +139,7 @@ public class ChatResponse {
 
         Integer flag;
         Long boardId;
+
     }
+
 }

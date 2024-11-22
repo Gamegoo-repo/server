@@ -1,12 +1,13 @@
 package com.gamegoo.dto.chat;
 
-import java.util.List;
+import lombok.Getter;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import lombok.Getter;
+import java.util.List;
 
 public class ChatRequest {
 
@@ -17,6 +18,7 @@ public class ChatRequest {
         Long targetMemberId;
 
         String postUrl;
+
     }
 
     @Getter
@@ -26,6 +28,7 @@ public class ChatRequest {
         Long targetMemberId;
 
         String postUrl;
+
     }
 
     @Getter
@@ -33,6 +36,7 @@ public class ChatRequest {
 
         @NotNull
         List<Long> memberList;
+
     }
 
     @Getter
@@ -42,6 +46,7 @@ public class ChatRequest {
         String message;
         @Valid
         SystemFlagRequest system;
+
     }
 
     @Getter
@@ -54,6 +59,7 @@ public class ChatRequest {
 
         @NotNull
         Long boardId;
+
     }
 
 }

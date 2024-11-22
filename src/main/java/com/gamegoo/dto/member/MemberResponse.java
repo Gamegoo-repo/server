@@ -1,12 +1,13 @@
 package com.gamegoo.dto.member;
 
 import com.gamegoo.domain.member.Tier;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 public class MemberResponse {
 
@@ -36,12 +37,14 @@ public class MemberResponse {
         String email;
         String name;
         Boolean isBlind;
+
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
     public static class LoginResponseDTO {
+
         Long id;
         String accessToken;
         String refreshToken;
@@ -59,6 +62,7 @@ public class MemberResponse {
 
         Long gameStyleId;
         String gameStyleName;
+
     }
 
     @Builder
@@ -69,15 +73,18 @@ public class MemberResponse {
 
         Long championId;
         String championName;
+
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
     public static class RefreshTokenResponseDTO {
+
         Long id;
         String accessToken;
         String refreshToken;
+
     }
 
     @Builder
@@ -105,12 +112,15 @@ public class MemberResponse {
         Double winrate;
         List<GameStyleResponseDTO> gameStyleResponseDTOList;
         List<ChampionResponseDTO> championResponseDTOList;
+
     }
+
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class myProfileDTO {
+
         Long id;
         Integer profileImg;
         Boolean mike;
@@ -131,6 +141,7 @@ public class MemberResponse {
         Double winrate;
         List<GameStyleResponseDTO> gameStyleResponseDTOList;
         List<ChampionResponseDTO> championResponseDTOList;
+
     }
 
     @Builder
@@ -162,6 +173,7 @@ public class MemberResponse {
         Long friendRequestMemberId; // 해당 회원과의 친구 요청 상태
         List<GameStyleResponseDTO> gameStyleResponseDTOList;
         List<ChampionResponseDTO> championResponseDTOList;
+
     }
 
     @Builder
@@ -174,6 +186,7 @@ public class MemberResponse {
         Integer list_size;
         Boolean has_next;
         Long next_cursor;
+
     }
 
     @Builder
@@ -187,6 +200,7 @@ public class MemberResponse {
         Integer memberProfileImg;
         Boolean isLiked;
         Boolean isBlind;
+
     }
 
     @Builder
@@ -197,6 +211,7 @@ public class MemberResponse {
 
         Long targetMemberId;
         String result;
+
     }
 
     @Builder
@@ -207,6 +222,7 @@ public class MemberResponse {
 
         Long friendMemberId;
         String result;
+
     }
 
 }

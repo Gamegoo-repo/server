@@ -10,6 +10,7 @@ public class ReportRequest {
 
     @Getter
     public static class reportInsertDTO {
+
         @NotNull
         Long targetMemberId;
 
@@ -17,5 +18,7 @@ public class ReportRequest {
         List<Long> reportTypeIdList;
 
         String contents;
+
     }
+
 }
