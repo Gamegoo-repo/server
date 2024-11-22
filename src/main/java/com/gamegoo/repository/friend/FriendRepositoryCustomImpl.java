@@ -1,17 +1,18 @@
 package com.gamegoo.repository.friend;
 
-import static com.gamegoo.domain.friend.QFriend.friend;
-
 import com.gamegoo.domain.friend.Friend;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.gamegoo.domain.friend.QFriend.friend;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,17 +21,16 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Friend> findFriendsByCursorAndOrdered(Long cursorId, Long memberId,
-        Integer pageSize) {
+    public Slice<Friend> findFriendsByCursorAndOrdered(Long cursorId, Long memberId, Integer pageSize) {
         // 전체 친구 목록 조회
         List<Friend> allFriends = queryFactory.selectFrom(friend)
-            .where(friend.fromMember.id.eq(memberId))
-            .fetch();
+                .where(friend.fromMember.id.eq(memberId))
+                .fetch();
 
         // 친구 목록 전체 정렬
         allFriends.sort(
-            (f1, f2) -> memberNameComparator.compare(f1.getToMember().getGameName(),
-                f2.getToMember().getGameName()));
+                (f1, f2) -> memberNameComparator.compare(f1.getToMember().getGameName(),
+                        f2.getToMember().getGameName()));
 
         // 정렬된 데이터에서 페이징 적용
         // cursorId에 해당하는 요소의 인덱스 찾기
@@ -40,9 +40,9 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
         }
 
         List<Friend> pagedFriends = allFriends.stream()
-            .skip(startIndex != 0 ? startIndex + 1 : 0) // cursorId가 null이 아니면 인덱스 다음부터, null이면 처음부터
-            .limit(pageSize + 1) // 다음 페이지가 있는지 확인하기 위해 +1
-            .collect(Collectors.toList());
+                .skip(startIndex != 0 ? startIndex + 1 : 0) // cursorId가 null이 아니면 인덱스 다음부터, null이면 처음부터
+                .limit(pageSize + 1) // 다음 페이지가 있는지 확인하기 위해 +1
+                .collect(Collectors.toList());
 
         boolean hasNext = false;
         if (pagedFriends.size() > pageSize) {
@@ -59,14 +59,14 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
     public List<Friend> findFriendsByQueryStringAndOrdered(String queryString, Long memberId) {
         // query string으로 시작하는 소환사명을 갖는 모든 친구 목록 조회
         List<Friend> result = queryFactory.selectFrom(friend)
-            .where(friend.fromMember.id.eq(memberId)
-                .and(friend.toMember.gameName.startsWith(queryString))
-            )
-            .fetch();
+                .where(friend.fromMember.id.eq(memberId)
+                        .and(friend.toMember.gameName.startsWith(queryString))
+                )
+                .fetch();
 
         result.sort(
-            (f1, f2) -> memberNameComparator.compare(f1.getToMember().getGameName(),
-                f2.getToMember().getGameName()));
+                (f1, f2) -> memberNameComparator.compare(f1.getToMember().getGameName(),
+                        f2.getToMember().getGameName()));
 
         return result;
     }
@@ -134,7 +134,8 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
      */
     private static boolean isKorean(char c) {
         return (c >= 0x1100 && c <= 0x11FF) || // 한글 자모
-            (c >= 0xAC00 && c <= 0xD7AF) || // 한글 음절
-            (c >= 0x3130 && c <= 0x318F);   // 한글 호환 자모
+                (c >= 0xAC00 && c <= 0xD7AF) || // 한글 음절
+                (c >= 0x3130 && c <= 0x318F);   // 한글 호환 자모
     }
+
 }

@@ -1,9 +1,5 @@
 package com.gamegoo.repository.chat;
 
-import static com.gamegoo.domain.chat.QChat.chat;
-import static com.gamegoo.domain.chat.QChatroom.chatroom;
-import static com.gamegoo.domain.chat.QMemberChatroom.memberChatroom;
-
 import com.gamegoo.domain.chat.MemberChatroom;
 import com.gamegoo.domain.chat.QChatroom;
 import com.querydsl.core.types.Order;
@@ -12,13 +8,18 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Coalesce;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.gamegoo.domain.chat.QChat.chat;
+import static com.gamegoo.domain.chat.QChatroom.chatroom;
+import static com.gamegoo.domain.chat.QMemberChatroom.memberChatroom;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,29 +36,28 @@ public class MemberChatroomRepositoryCustomImpl implements MemberChatroomReposit
      * @return
      */
     @Override
-    public Slice<MemberChatroom> findActiveMemberChatroomByCursorOrderByLastChat(Long memberId,
-        Long cursor, Integer pageSize) {
-
+    public Slice<MemberChatroom> findActiveMemberChatroomByCursorOrderByLastChat(Long memberId, Long cursor,
+                                                                                 Integer pageSize) {
         List<MemberChatroom> result = queryFactory.selectFrom(memberChatroom)
-            .join(memberChatroom.chatroom, chatroom)
-            .where(
-                memberChatroom.member.id.eq(memberId),
-                memberChatroom.lastJoinDate.isNotNull(),
-                lastMsgLessThanCursor(cursor, chatroom)
-            )
-            .orderBy(new OrderSpecifier<>(
-                    Order.DESC,
-                    new Coalesce<LocalDateTime>()
-                        .add(JPAExpressions.select(chat.createdAt.max())
-                            .from(chat)
-                            .where(
-                                chat.chatroom.eq(chatroom),
-                                chat.createdAt.goe(memberChatroom.lastJoinDate)))
-                        .add(memberChatroom.lastJoinDate) // 해당 채팅방에 대화 내역이 없는 경우, lastJoinDate를 기준으로 정렬
+                .join(memberChatroom.chatroom, chatroom)
+                .where(
+                        memberChatroom.member.id.eq(memberId),
+                        memberChatroom.lastJoinDate.isNotNull(),
+                        lastMsgLessThanCursor(cursor, chatroom)
                 )
-            )
-            .limit(pageSize + 1) // 다음 페이지가 있는지 확인하기 위해 +1
-            .fetch();
+                .orderBy(new OrderSpecifier<>(
+                                Order.DESC,
+                                new Coalesce<LocalDateTime>()
+                                        .add(JPAExpressions.select(chat.createdAt.max())
+                                                .from(chat)
+                                                .where(
+                                                        chat.chatroom.eq(chatroom),
+                                                        chat.createdAt.goe(memberChatroom.lastJoinDate)))
+                                        .add(memberChatroom.lastJoinDate) // 해당 채팅방에 대화 내역이 없는 경우, lastJoinDate를 기준으로 정렬
+                        )
+                )
+                .limit(pageSize + 1) // 다음 페이지가 있는지 확인하기 위해 +1
+                .fetch();
 
         boolean hasNext = false;
         if (result.size() > pageSize) {
@@ -79,12 +79,12 @@ public class MemberChatroomRepositoryCustomImpl implements MemberChatroomReposit
     @Override
     public List<MemberChatroom> findAllActiveMemberChatroom(Long memberId) {
         return queryFactory.selectFrom(memberChatroom)
-            .join(memberChatroom.chatroom, chatroom)
-            .where(
-                memberChatroom.member.id.eq(memberId),
-                memberChatroom.lastJoinDate.isNotNull()
-            )
-            .fetch();
+                .join(memberChatroom.chatroom, chatroom)
+                .where(
+                        memberChatroom.member.id.eq(memberId),
+                        memberChatroom.lastJoinDate.isNotNull()
+                )
+                .fetch();
     }
 
     //--- BooleanExpression ---//
@@ -94,9 +94,10 @@ public class MemberChatroomRepositoryCustomImpl implements MemberChatroomReposit
         }
 
         return JPAExpressions.select(chat.timestamp.max())
-            .from(chat)
-            .where(
-                chat.chatroom.eq(chatroom)
-            ).lt(cursor);
+                .from(chat)
+                .where(
+                        chat.chatroom.eq(chatroom)
+                ).lt(cursor);
     }
+
 }

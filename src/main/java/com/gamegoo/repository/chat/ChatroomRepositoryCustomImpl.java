@@ -1,13 +1,14 @@
 package com.gamegoo.repository.chat;
 
-import static com.gamegoo.domain.chat.QChatroom.chatroom;
-import static com.gamegoo.domain.chat.QMemberChatroom.memberChatroom;
-
 import com.gamegoo.domain.chat.Chatroom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
+import static com.gamegoo.domain.chat.QChatroom.chatroom;
+import static com.gamegoo.domain.chat.QMemberChatroom.memberChatroom;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,14 +26,15 @@ public class ChatroomRepositoryCustomImpl implements ChatroomRepositoryCustom {
     @Override
     public Optional<Chatroom> findChatroomByMemberIds(Long memberId1, Long memberId2) {
         Chatroom chatroomEntity = queryFactory
-            .select(chatroom)
-            .from(memberChatroom)
-            .join(chatroom).on(memberChatroom.chatroom.id.eq(chatroom.id))
-            .where(memberChatroom.member.id.in(memberId1, memberId2))
-            .groupBy(memberChatroom.chatroom.id)
-            .having(memberChatroom.member.id.count().eq(2L))
-            .fetchFirst();
+                .select(chatroom)
+                .from(memberChatroom)
+                .join(chatroom).on(memberChatroom.chatroom.id.eq(chatroom.id))
+                .where(memberChatroom.member.id.in(memberId1, memberId2))
+                .groupBy(memberChatroom.chatroom.id)
+                .having(memberChatroom.member.id.count().eq(2L))
+                .fetchFirst();
 
         return Optional.ofNullable(chatroomEntity);
     }
+
 }
