@@ -23,16 +23,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class ReportService {
+
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
     private final ReportTypeRepository reportTypeRepository;
     private final ReportTypeMappingRepository reportTypeMappingRepository;
 
     public Report insertReport(ReportRequest.reportInsertDTO request, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // target 회원 존재 여부 검증.
-        Member targetMember = memberRepository.findById(request.getTargetMemberId()).orElseThrow(() -> new MemberHandler(ErrorStatus.REPORT_TARGET_MEMBER_NOT_FOUND));
+        Member targetMember = memberRepository.findById(request.getTargetMemberId())
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.REPORT_TARGET_MEMBER_NOT_FOUND));
 
         // target 회원 탈퇴 여부 검증.
         if (targetMember.getBlind()) {
@@ -43,7 +46,8 @@ public class ReportService {
         List<ReportType> reportTypeList = new ArrayList<>();
         request.getReportTypeIdList()
                 .forEach(reportTypeId -> {
-                    ReportType reportType = reportTypeRepository.findById(reportTypeId).orElseThrow(() -> new TempHandler(ErrorStatus._BAD_REQUEST));
+                    ReportType reportType = reportTypeRepository.findById(reportTypeId)
+                            .orElseThrow(() -> new TempHandler(ErrorStatus._BAD_REQUEST));
                     reportTypeList.add(reportType);
                 });
 
@@ -74,4 +78,5 @@ public class ReportService {
 
         return saveReport;
     }
+
 }

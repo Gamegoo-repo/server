@@ -12,13 +12,14 @@ import com.gamegoo.repository.friend.FriendRepository;
 import com.gamegoo.repository.friend.FriendRequestsRepository;
 import com.gamegoo.service.notification.NotificationService;
 import com.gamegoo.util.MemberUtils;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,6 @@ public class FriendService {
 
     private final static int PAGE_SIZE = 10;
 
-
     /**
      * memberId에 해당하는 회원의 친구 목록 조회, 오름차순 정렬 및 페이징 포함
      *
@@ -41,9 +41,8 @@ public class FriendService {
      */
     @Transactional(readOnly = true)
     public Slice<Friend> getFriends(Long memberId, Long cursorId) {
-
         // 커서 값 검증
-        if (cursorId != null && cursorId < 0) {
+        if (cursorId!=null && cursorId < 0) {
             throw new PageHandler(ErrorStatus.CURSOR_INVALID);
         }
 
@@ -81,8 +80,10 @@ public class FriendService {
 
         List<Friend> friendList = friendRepository.findAllByFromMemberId(member.getId());
 
-        return friendList.stream().map(friend -> friend.getToMember().getId())
-            .collect(Collectors.toList());
+        return friendList
+                .stream()
+                .map(friend -> friend.getToMember().getId())
+                .collect(Collectors.toList());
     }
 
     /**
@@ -114,40 +115,37 @@ public class FriendService {
 
         // 서로 이미 친구 관계인 경우
         friendRepository.findByFromMemberAndToMember(member, targetMember)
-            .ifPresent(friend -> {
-                throw new FriendHandler(ErrorStatus.ALREADY_FRIEND);
-            });
+                .ifPresent(friend -> {
+                    throw new FriendHandler(ErrorStatus.ALREADY_FRIEND);
+                });
 
         // member -> targetMember로 보낸 친구 요청 중 PENDING 상태인 친구 요청이 존재하는 경우
-        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(member, targetMember,
-                FriendRequestStatus.PENDING)
-            .ifPresent(friendRequest -> {
-                throw new FriendHandler(ErrorStatus.MY_PENDING_FRIEND_REQUEST_EXIST);
-            });
+        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(member, targetMember, FriendRequestStatus.PENDING)
+                .ifPresent(friendRequest -> {
+                    throw new FriendHandler(ErrorStatus.MY_PENDING_FRIEND_REQUEST_EXIST);
+                });
 
         // targetMember -> member에게 보낸 친구 요청 중 PENDING 상태인 친구 요청이 존재하는 경우
-        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(targetMember, member,
-                FriendRequestStatus.PENDING)
-            .ifPresent(friendRequests -> {
-                throw new FriendHandler(ErrorStatus.TARGET_PENDING_FRIEND_REQUEST_EXIST);
-            });
+        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(targetMember, member, FriendRequestStatus.PENDING)
+                .ifPresent(friendRequests -> {
+                    throw new FriendHandler(ErrorStatus.TARGET_PENDING_FRIEND_REQUEST_EXIST);
+                });
 
         FriendRequests friendRequests = FriendRequests.builder()
-            .status(FriendRequestStatus.PENDING)
-            .fromMember(member)
-            .toMember(targetMember)
-            .build();
+                .status(FriendRequestStatus.PENDING)
+                .fromMember(member)
+                .toMember(targetMember)
+                .build();
 
         friendRequestsRepository.save(friendRequests);
 
         // 친구 요청 알림 생성
         // member -> targetMember
-        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_SEND,
-            null, targetMember, member);
+        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_SEND, null, targetMember, member);
 
         // targetMember -> member
-        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_RECEIVED,
-            null, member, targetMember);
+        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_RECEIVED, null, member,
+                targetMember);
     }
 
     /**
@@ -167,8 +165,8 @@ public class FriendService {
         }
 
         // 수락 대기 상태인 FriendRequest 엔티티 조회
-        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository.findByFromMemberAndToMemberAndStatus(
-            member, targetMember, FriendRequestStatus.PENDING);
+        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository
+                .findByFromMemberAndToMemberAndStatus(member, targetMember, FriendRequestStatus.PENDING);
 
         // 수락 대기 중인 친구 요청이 존재하지 않는 경우
         if (pendingFriendRequest.isEmpty()) {
@@ -197,8 +195,8 @@ public class FriendService {
         }
 
         // 수락 대기 상태인 FriendRequest 엔티티 조회
-        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository.findByFromMemberAndToMemberAndStatus(
-            targetMember, member, FriendRequestStatus.PENDING);
+        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository
+                .findByFromMemberAndToMemberAndStatus(targetMember, member, FriendRequestStatus.PENDING);
 
         // 수락 대기 중인 친구 요청이 존재하지 않는 경우
         if (pendingFriendRequest.isEmpty()) {
@@ -210,23 +208,23 @@ public class FriendService {
 
         // 회원 간 Friend 엔티티 생성 및 저장
         Friend targetMemberFriend = Friend.builder()
-            .fromMember(targetMember)
-            .toMember(member)
-            .isLiked(false)
-            .build();
+                .fromMember(targetMember)
+                .toMember(member)
+                .isLiked(false)
+                .build();
 
         Friend memberFriend = Friend.builder()
-            .fromMember(member)
-            .toMember(targetMember)
-            .isLiked(false)
-            .build();
+                .fromMember(member)
+                .toMember(targetMember)
+                .isLiked(false)
+                .build();
 
         friendRepository.save(targetMemberFriend);
         friendRepository.save(memberFriend);
 
         // targetMember에게 친구 요청 수락 알림 생성
-        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_ACCEPTED,
-            member.getGameName(), member, targetMember);
+        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_ACCEPTED, member.getGameName(),
+                member, targetMember);
     }
 
     /**
@@ -246,8 +244,8 @@ public class FriendService {
         }
 
         // 수락 대기 상태인 FriendRequest 엔티티 조회
-        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository.findByFromMemberAndToMemberAndStatus(
-            targetMember, member, FriendRequestStatus.PENDING);
+        Optional<FriendRequests> pendingFriendRequest = friendRequestsRepository
+                .findByFromMemberAndToMemberAndStatus(targetMember, member, FriendRequestStatus.PENDING);
 
         // 수락 대기 중인 친구 요청이 존재하지 않는 경우
         if (pendingFriendRequest.isEmpty()) {
@@ -258,8 +256,8 @@ public class FriendService {
         pendingFriendRequest.get().updateStatus(FriendRequestStatus.REJECTED);
 
         // targetMember에게 친구 요청 거절 알림 생성
-        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_REJECTED,
-            member.getGameName(), member, targetMember);
+        notificationService.createNotification(NotificationTypeTitle.FRIEND_REQUEST_REJECTED, member.getGameName(),
+                member, targetMember);
     }
 
     /**
@@ -279,8 +277,7 @@ public class FriendService {
             throw new FriendHandler(ErrorStatus.FRIEND_BAD_REQUEST);
         }
 
-        Optional<Friend> friend = friendRepository.findByFromMemberAndToMember(member,
-            friendMember);
+        Optional<Friend> friend = friendRepository.findByFromMemberAndToMember(member, friendMember);
 
         // 친구 회원의 탈퇴 여부 검증
         if (friendMember.getBlind()) {
@@ -318,8 +315,7 @@ public class FriendService {
             throw new FriendHandler(ErrorStatus.FRIEND_BAD_REQUEST);
         }
 
-        Optional<Friend> friend = friendRepository.findByFromMemberAndToMember(member,
-            friendMember);
+        Optional<Friend> friend = friendRepository.findByFromMemberAndToMember(member, friendMember);
 
         // 친구 회원의 탈퇴 여부 검증
         if (friendMember.getBlind()) {
@@ -366,11 +362,14 @@ public class FriendService {
      */
     public void removeFriendshipIfPresent(Member fromMember, Member toMember) {
         friendRepository.findByFromMemberAndToMember(fromMember, toMember)
-            .ifPresent(friend -> {
-                friendRepository.deleteById(friend.getId());
-                friendRepository.findByFromMemberAndToMember(toMember, fromMember)
-                    .ifPresent(reverseFriend -> friendRepository.deleteById(reverseFriend.getId()));
-            });
+                .ifPresent(friend -> {
+                    friendRepository.deleteById(friend.getId());
+
+                    friendRepository.findByFromMemberAndToMember(toMember, fromMember)
+                            .ifPresent(reverseFriend ->
+                                    friendRepository.deleteById(reverseFriend.getId())
+                            );
+                });
     }
 
     /**
@@ -380,10 +379,10 @@ public class FriendService {
      * @param toMember
      */
     public void cancelPendingFriendRequests(Member fromMember, Member toMember) {
-        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(fromMember, toMember,
-                FriendRequestStatus.PENDING)
-            .ifPresent(
-                friendRequests -> friendRequests.updateStatus(FriendRequestStatus.CANCELLED));
+        friendRequestsRepository.findByFromMemberAndToMemberAndStatus(fromMember, toMember, FriendRequestStatus.PENDING)
+                .ifPresent(friendRequests ->
+                        friendRequests.updateStatus(FriendRequestStatus.CANCELLED)
+                );
     }
 
     /**
@@ -396,7 +395,7 @@ public class FriendService {
     @Transactional(readOnly = true)
     public boolean isFriend(Member member1, Member member2) {
         List<Friend> friendList = friendRepository.findBothDirections(member1, member2);
-        return (friendList.size() == 2);
+        return (friendList.size()==2);
     }
 
     /**
@@ -408,11 +407,12 @@ public class FriendService {
      */
     public Long getFriendRequestMemberId(Member member1, Member member2) {
         return friendRequestsRepository.findByFromMemberAndToMemberAndStatus(member1, member2,
-                FriendRequestStatus.PENDING)
-            .map(friendRequests -> member1.getId())
-            .or(() -> friendRequestsRepository.findByFromMemberAndToMemberAndStatus(member2,
-                    member1, FriendRequestStatus.PENDING)
-                .map(friendRequests -> member2.getId()))
-            .orElse(null); // 친구 요청이 없는 경우 null을 리턴
+                        FriendRequestStatus.PENDING)
+                .map(friendRequests -> member1.getId())
+                .or(() -> friendRequestsRepository.findByFromMemberAndToMemberAndStatus(member2,
+                                member1, FriendRequestStatus.PENDING)
+                        .map(friendRequests -> member2.getId()))
+                .orElse(null); // 친구 요청이 없는 경우 null을 리턴
     }
+
 }

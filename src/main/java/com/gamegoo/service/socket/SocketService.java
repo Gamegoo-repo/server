@@ -2,8 +2,6 @@ package com.gamegoo.service.socket;
 
 import com.gamegoo.apiPayload.code.status.ErrorStatus;
 import com.gamegoo.apiPayload.exception.handler.SocketHandler;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -38,8 +39,7 @@ public class SocketService {
         requestBody.put("chatroomUuid", chatroomUuid);
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(url, requestBody,
-                String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestBody, String.class);
 
             log.info("response of joinSocketToChatroom: {}", response.getStatusCode().toString());
             if (!response.getStatusCode().equals(HttpStatus.OK)) {
@@ -54,8 +54,7 @@ public class SocketService {
         }
     }
 
-    public void sendSystemMessage(Long memberId, String chatroomUuid, String content,
-        Long timestamp) {
+    public void sendSystemMessage(Long memberId, String chatroomUuid, String content, Long timestamp) {
         String url = SOCKET_SERVER_URL + "/socket/sysmessage";
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("memberId", memberId);
@@ -64,8 +63,7 @@ public class SocketService {
         requestBody.put("timestamp", timestamp);
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(url, requestBody,
-                String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestBody, String.class);
 
             log.info("response of joinSocketToChatroom: {}", response.getStatusCode().toString());
             if (!response.getStatusCode().equals(HttpStatus.OK)) {
@@ -78,6 +76,6 @@ public class SocketService {
             log.error("Error occurred while sendSystemMessage method", e);
             throw new SocketHandler(ErrorStatus.SOCKET_API_RESPONSE_ERROR);
         }
-
     }
+
 }

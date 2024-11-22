@@ -23,7 +23,6 @@ public class PasswordService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
 
-
     /**
      * 비밀번호가 맞는지 확인
      *
@@ -54,10 +53,9 @@ public class PasswordService {
             // 비밀번호 재설정
             member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
             memberRepository.save(member);
-        }else{
+        } else {
             throw new MemberHandler(ErrorStatus.PASSWORD_INVALID);
         }
-
     }
 
     /**
@@ -73,7 +71,6 @@ public class PasswordService {
         // 비밀번호 재설정
         member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
         memberRepository.save(member);
-
     }
 
     /**
@@ -84,8 +81,7 @@ public class PasswordService {
      */
     public void sendEmailInternal(String email, String tempPassword) {
         try {
-            log.info("Starting email send process for email: {}, certificationNumber: {}", email,
-                    tempPassword);
+            log.info("Starting email send process for email: {}, certificationNumber: {}", email, tempPassword);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);
@@ -99,8 +95,6 @@ public class PasswordService {
 
             javaMailSender.send(message);
             log.info("Email sent successfully to email: {}", email);
-
-
         } catch (MessagingException e) {
             log.error("Failed to send email to email: {}, certificationNumber: {}, error: {}",
                     email, tempPassword, e.getMessage());
@@ -117,7 +111,8 @@ public class PasswordService {
      */
     private String getTempPasswordMessage(String tempPassword) {
         String certificationMessage = ""
-                + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3" +
+                ".org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
                 +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                 "  <head>\n" +

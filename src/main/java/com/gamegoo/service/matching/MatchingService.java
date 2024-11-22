@@ -16,15 +16,16 @@ import com.gamegoo.repository.matching.MatchingRecordRepository;
 import com.gamegoo.repository.member.BlockRepository;
 import com.gamegoo.repository.member.MemberRepository;
 import com.gamegoo.service.member.ProfileService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -45,47 +46,48 @@ public class MatchingService {
      */
     // 우선순위 계산
     public Map<String, List<MemberPriority>> calculatePriorityList(
-        MatchingRequest.InitializingMatchingRequestDTO request, Long id) {
-
+            MatchingRequest.InitializingMatchingRequestDTO request, Long id) {
         LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
         log.info("Fetching matching records from the past 5 minutes");
 
-        List<MatchingRecord> matchingRecords = matchingRecordRepository.findTopByCreatedAtAfterAndStatusAndGameModeGroupByMemberId(
-            fiveMinutesAgo, MatchingStatus.PENDING, request.getGameMode());
+        List<MatchingRecord> matchingRecords =
+                matchingRecordRepository.findTopByCreatedAtAfterAndStatusAndGameModeGroupByMemberId(fiveMinutesAgo,
+                        MatchingStatus.PENDING, request.getGameMode());
 
         Member member = profileService.findMember(id);
 
         MatchingRecord myMatchingRecord = MatchingRecord.builder()
-            .member(member)
-            .mike(request.getMike())
-            .rank(member.getRank())
-            .tier(member.getTier())
-            .winRate(member.getWinRate())
-            .status(MatchingStatus.PENDING)
-            .matchingType(MatchingType.valueOf(request.getMatchingType()))
-            .mainPosition(request.getMainP())
-            .subPosition(request.getSubP())
-            .wantPosition(request.getWantP())
-            .mannerLevel(member.getMannerLevel())
-            .gameMode(request.getGameMode())
-            .targetMember(null)
-            .build();
+                .member(member)
+                .mike(request.getMike())
+                .rank(member.getRank())
+                .tier(member.getTier())
+                .winRate(member.getWinRate())
+                .status(MatchingStatus.PENDING)
+                .matchingType(MatchingType.valueOf(request.getMatchingType()))
+                .mainPosition(request.getMainP())
+                .subPosition(request.getSubP())
+                .wantPosition(request.getWantP())
+                .mannerLevel(member.getMannerLevel())
+                .gameMode(request.getGameMode())
+                .targetMember(null)
+                .build();
 
-        log.debug(
-            "MatchingRecord details: memberId: {}, mike: {}, rank: {}, tier: {}, winRate: {}, status: {}, matchingType: {}, mainPosition: {}, subPosition: {}, wantPosition: {}, mannerLevel: {}, gameMode: {}, targetMember: {}",
-            myMatchingRecord.getMember().getId(),
-            myMatchingRecord.getMike(),
-            myMatchingRecord.getRank(),
-            myMatchingRecord.getTier(),
-            myMatchingRecord.getWinRate(),
-            myMatchingRecord.getStatus(),
-            myMatchingRecord.getMatchingType(),
-            myMatchingRecord.getMainPosition(),
-            myMatchingRecord.getSubPosition(),
-            myMatchingRecord.getWantPosition(),
-            myMatchingRecord.getMannerLevel(),
-            myMatchingRecord.getGameMode(),
-            myMatchingRecord.getTargetMember());
+        log.debug("MatchingRecord details: memberId: {}, mike: {}, rank: {}, tier: {}, winRate: {}, status: {}, " +
+                        "matchingType: {}, mainPosition: {}, subPosition: {}, wantPosition: {}, mannerLevel: {}, " +
+                        "gameMode: {}, targetMember: {}",
+                myMatchingRecord.getMember().getId(),
+                myMatchingRecord.getMike(),
+                myMatchingRecord.getRank(),
+                myMatchingRecord.getTier(),
+                myMatchingRecord.getWinRate(),
+                myMatchingRecord.getStatus(),
+                myMatchingRecord.getMatchingType(),
+                myMatchingRecord.getMainPosition(),
+                myMatchingRecord.getSubPosition(),
+                myMatchingRecord.getWantPosition(),
+                myMatchingRecord.getMannerLevel(),
+                myMatchingRecord.getGameMode(),
+                myMatchingRecord.getTargetMember());
 
         // 우선순위 리스트 초기화
         List<MemberPriority> myPriorityList = new ArrayList<>();
@@ -101,13 +103,12 @@ public class MatchingService {
             if (!id.equals(otherMemberId)) {
                 int otherPriority = calculatePriority(myMatchingRecord, record);
                 myPriorityList.add(new MemberPriority(otherMemberId, otherPriority));
-                log.info("Added to myPriorityList: otherMemberId: {}, priority: {}", otherMemberId,
-                    otherPriority);
+                log.info("Added to myPriorityList: otherMemberId: {}, priority: {}", otherMemberId, otherPriority);
 
                 int myPriority = calculatePriority(record, myMatchingRecord);
                 otherPriorityList.add(new MemberPriority(record.getMember().getId(), myPriority));
-                log.info("Added to otherPriorityList: myMemberId: {}, priority: {}",
-                    record.getMember().getId(), myPriority);
+                log.info("Added to otherPriorityList: myMemberId: {}, priority: {}", record.getMember().getId(),
+                        myPriority);
             }
         }
 
@@ -128,8 +129,7 @@ public class MatchingService {
      * @param otherMatchingRecord
      * @return
      */
-    private int calculatePriority(MatchingRecord myMatchingRecord,
-        MatchingRecord otherMatchingRecord) {
+    private int calculatePriority(MatchingRecord myMatchingRecord, MatchingRecord otherMatchingRecord) {
         int priority = 0;
 
         Integer myRank = myMatchingRecord.getRank();
@@ -159,14 +159,14 @@ public class MatchingService {
         // 주/부 포지션 조합이 같을 경우 X
         // 겹치는게 둘 중 하나라도 0일 경우는 X
         if ((otherMainPosition.equals(myMainPosition) && otherSubPosition.equals(mySubPosition)
-            && !(otherMainPosition.equals(0) || otherSubPosition.equals(0))) ||
-            (otherMainPosition.equals(mySubPosition) && otherSubPosition.equals(myMainPosition)
+                && !(otherMainPosition.equals(0) || otherSubPosition.equals(0)))
+                || (otherMainPosition.equals(mySubPosition) && otherSubPosition.equals(myMainPosition)
                 && !(otherMainPosition.equals(0) || otherSubPosition.equals(0)))) {
             return 0;
         }
 
         // 개인 랭크 예외조건
-        if (gameMode == 2) {
+        if (gameMode==2) {
             // 티어 차이가 1개 이상 나면 X
             if (Math.abs(myTier.ordinal() - otherTier.ordinal()) > 1) {
                 return 0;
@@ -179,7 +179,7 @@ public class MatchingService {
         }
 
         // 자유랭크 예외조건
-        if (gameMode == 3) {
+        if (gameMode==3) {
             // 마스터 이상 플레이어는 골드 이하의 플레이어와 매칭 X
             if (myTier.ordinal() >= 7 && otherTier.ordinal() <= 3) {
                 return 0;
@@ -211,8 +211,7 @@ public class MatchingService {
             }
 
             // 내가 원하는 포지션이 상대 포지션이 아닐 경우 return 0
-            if (!otherMainPosition.equals(myWantPosition) && !otherSubPosition.equals(
-                myWantPosition)) {
+            if (!otherMainPosition.equals(myWantPosition) && !otherSubPosition.equals(myWantPosition)) {
                 return 0;
             }
 
@@ -232,7 +231,7 @@ public class MatchingService {
             // 마이크 가중치
             if (otherMike.equals(myMike)) {
                 // 개인 랭크일 경우 랭크가 맞는게 더 중요함
-                if (gameMode == 2) {
+                if (gameMode==2) {
                     priority += 2;
                 }
                 priority += 3;
@@ -240,16 +239,15 @@ public class MatchingService {
 
             // 포지션 가중치
             // 칼바람 : 포지션 선택 제외하기 -> 포지션 점수 기본값으로 주고 시작하기
-            if (gameMode == 4) {
+            if (gameMode==4) {
                 priority += 6;
             } else {
                 // 포지션 값이 Null일 경우 예외처리
-                if (myMainPosition == null || mySubPosition == null || myWantPosition == null) {
+                if (myMainPosition==null || mySubPosition==null || myWantPosition==null) {
                     throw new MatchingHandler(ErrorStatus.POSITION_NOT_FOUND);
                 }
 
-                if (myWantPosition.equals(otherMainPosition) || myWantPosition.equals(0)
-                    || otherMainPosition.equals(0)) {
+                if (myWantPosition.equals(otherMainPosition) || myWantPosition.equals(0) || otherMainPosition.equals(0)) {
                     priority += 3;
                 } else if (myWantPosition.equals(otherSubPosition) || otherSubPosition.equals(0)) {
                     priority += 2;
@@ -257,8 +255,7 @@ public class MatchingService {
                     priority += 1;
                 }
 
-                if (otherWantPosition.equals(myMainPosition) || otherWantPosition.equals(0)
-                    || myMainPosition.equals(0)) {
+                if (otherWantPosition.equals(myMainPosition) || otherWantPosition.equals(0) || myMainPosition.equals(0)) {
                     priority += 3;
                 } else if (otherWantPosition.equals(mySubPosition) || mySubPosition.equals(0)) {
                     priority += 2;
@@ -298,7 +295,6 @@ public class MatchingService {
      * @return 랭킹 우선순위 값
      */
     private int getTierPriority(Tier myTier, Integer myRank, Tier otherTier, Integer otherRank) {
-
         int priority = 0;
 
         // priority 값 계산 : 랭크
@@ -338,40 +334,39 @@ public class MatchingService {
 
         // 매칭 기록 저장
         MatchingRecord matchingRecord = MatchingRecord.builder()
-            .mike(request.getMike())
-            .tier(member.getTier())
-            .rank(member.getRank())
-            .matchingType(MatchingType.valueOf(request.getMatchingType()))
-            .status(MatchingStatus.PENDING)
-            .mainPosition(request.getMainP())
-            .subPosition(request.getSubP())
-            .wantPosition(request.getWantP())
-            .winRate(member.getWinRate())
-            .gameMode(request.getGameMode())
-            .mannerLevel(member.getMannerLevel())
-            .member(member)
-            .targetMember(null)
-            .mannerMessageSent(false)
-            .build();
-        log.debug("Matching record created for memberId: {}, gameMode: {}", member.getId(),
-            request.getGameMode());
+                .mike(request.getMike())
+                .tier(member.getTier())
+                .rank(member.getRank())
+                .matchingType(MatchingType.valueOf(request.getMatchingType()))
+                .status(MatchingStatus.PENDING)
+                .mainPosition(request.getMainP())
+                .subPosition(request.getSubP())
+                .wantPosition(request.getWantP())
+                .winRate(member.getWinRate())
+                .gameMode(request.getGameMode())
+                .mannerLevel(member.getMannerLevel())
+                .member(member)
+                .targetMember(null)
+                .mannerMessageSent(false)
+                .build();
+        log.debug("Matching record created for memberId: {}, gameMode: {}", member.getId(), request.getGameMode());
 
         // 매칭 기록에 따라 member 정보 변경하기
-        if (request.getMainP() != null && request.getSubP() != null && request.getWantP() != null) {
-            member.updateMemberFromMatching(request.getMainP(), request.getSubP(), request.getWantP(), request.getMike());
-            log.info("Updated member information based on matching record, memberId: {}",
-                member.getId());
+        if (request.getMainP()!=null && request.getSubP()!=null && request.getWantP()!=null) {
+            member.updateMemberFromMatching(request.getMainP(), request.getSubP(), request.getWantP(),
+                    request.getMike());
+            log.info("Updated member information based on matching record, memberId: {}", member.getId());
         }
+
         profileService.addMemberGameStyles(request.getGameStyleIdList(), member.getId());
         log.debug("Game styles added for member, memberId: {}", member.getId());
 
         matchingRecordRepository.save(matchingRecord);
-        log.info("Matching record saved successfully for memberId: {}, gameMode: {}",
-            member.getId(), request.getGameMode());
+        log.info("Matching record saved successfully for memberId: {}, gameMode: {}", member.getId(),
+                request.getGameMode());
 
         memberRepository.save(member);
         log.info("Member record updated successfully for memberId: {}", member.getId());
-
     }
 
     /**
@@ -386,11 +381,10 @@ public class MatchingService {
         Member member = profileService.findMember(id);
 
         // 매칭 기록 불러오기
-        MatchingRecord matchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                member, request.getGameMode())
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
-        if (matchingRecord.getStatus().equals(MatchingStatus.PENDING) || matchingRecord.getStatus()
-            .equals(MatchingStatus.FOUND)) {
+        MatchingRecord matchingRecord =
+                matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(member, request.getGameMode())
+                        .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        if (matchingRecord.getStatus().equals(MatchingStatus.PENDING) || matchingRecord.getStatus().equals(MatchingStatus.FOUND)) {
             try {
                 MatchingStatus status = MatchingStatus.valueOf(request.getStatus().toUpperCase());
                 // status 값 변경
@@ -401,7 +395,6 @@ public class MatchingService {
                 throw new MatchingHandler(ErrorStatus.MATCHING_STATUS_BAD_REQUEST);
             }
         }
-
     }
 
     /**
@@ -412,9 +405,7 @@ public class MatchingService {
      * @param targetMemberId
      */
     @Transactional
-    public void updateBothStatus(MatchingRequest.ModifyMatchingRequestDTO request, Long memberId,
-        Long targetMemberId) {
-
+    public void updateBothStatus(MatchingRequest.ModifyMatchingRequestDTO request, Long memberId, Long targetMemberId) {
         // request 값 검증
         MatchingStatus status;
         try {
@@ -429,21 +420,19 @@ public class MatchingService {
         Member targetMember = profileService.findMember(targetMemberId);
 
         // member의 매칭 기록 상태 변경
-        MatchingRecord matchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                member, request.getGameMode())
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
-        if (matchingRecord.getStatus().equals(MatchingStatus.PENDING) || matchingRecord.getStatus()
-            .equals(MatchingStatus.FOUND)) {
+        MatchingRecord matchingRecord =
+                matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(member, request.getGameMode())
+                        .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        if (matchingRecord.getStatus().equals(MatchingStatus.PENDING) || matchingRecord.getStatus().equals(MatchingStatus.FOUND)) {
             matchingRecord.updateStatus(status);
         }
 
         // targetMember의 매칭 기록 상태 변경
-        MatchingRecord targetMatchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                targetMember, request.getGameMode())
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
-
-        if (targetMatchingRecord.getStatus().equals(MatchingStatus.PENDING)
-            || targetMatchingRecord.getStatus().equals(MatchingStatus.FOUND)) {
+        MatchingRecord targetMatchingRecord =
+                matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(targetMember,
+                                request.getGameMode())
+                        .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        if (targetMatchingRecord.getStatus().equals(MatchingStatus.PENDING) || targetMatchingRecord.getStatus().equals(MatchingStatus.FOUND)) {
             targetMatchingRecord.updateStatus(status);
         }
     }
@@ -454,63 +443,60 @@ public class MatchingService {
      * @return
      */
     @Transactional
-    public MatchingResponse.matchingFoundResponseDTO foundMatching(Long memberId,
-        Long targetMemberId, int gameMode) {
-
+    public MatchingResponse.matchingFoundResponseDTO foundMatching(Long memberId, Long targetMemberId, int gameMode) {
         // member 엔티티 조회
         Member member = profileService.findMember(memberId);
         Member targetMember = profileService.findMember(targetMemberId);
 
         // member의 매칭 기록 상태 변경
-        MatchingRecord matchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                member, gameMode)
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        MatchingRecord matchingRecord =
+                matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(member, gameMode)
+                        .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
         matchingRecord.updateStatus(MatchingStatus.FOUND);
 
         // targetMember의 매칭 기록 상태 변경
-        MatchingRecord targetMatchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                targetMember, gameMode)
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        MatchingRecord targetMatchingRecord =
+                matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(targetMember, gameMode)
+                        .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
         targetMatchingRecord.updateStatus(MatchingStatus.FOUND);
 
         // response dto 생성
         MatchingResponse.matchingRequestResponseDTO myMatchingInfo = matchingRequestResponseDTO.builder()
-            .memberId(member.getId())
-            .gameName(member.getGameName())
-            .tag(member.getTag())
-            .tier(member.getTier())
-            .rank(matchingRecord.getRank())
-            .mannerLevel(matchingRecord.getMannerLevel())
-            .profileImg(member.getProfileImage())
-            .gameMode(matchingRecord.getGameMode())
-            .mainPosition(matchingRecord.getMainPosition())
-            .subPosition(matchingRecord.getSubPosition())
-            .wantPosition(matchingRecord.getWantPosition())
-            .mike(matchingRecord.getMike())
-            .gameStyleList(profileService.getGameStyleList(member))
-            .build();
+                .memberId(member.getId())
+                .gameName(member.getGameName())
+                .tag(member.getTag())
+                .tier(member.getTier())
+                .rank(matchingRecord.getRank())
+                .mannerLevel(matchingRecord.getMannerLevel())
+                .profileImg(member.getProfileImage())
+                .gameMode(matchingRecord.getGameMode())
+                .mainPosition(matchingRecord.getMainPosition())
+                .subPosition(matchingRecord.getSubPosition())
+                .wantPosition(matchingRecord.getWantPosition())
+                .mike(matchingRecord.getMike())
+                .gameStyleList(profileService.getGameStyleList(member))
+                .build();
 
         MatchingResponse.matchingRequestResponseDTO targetMatchingInfo = matchingRequestResponseDTO.builder()
-            .memberId(targetMember.getId())
-            .gameName(targetMember.getGameName())
-            .tag(targetMember.getTag())
-            .tier(targetMember.getTier())
-            .rank(targetMatchingRecord.getRank())
-            .mannerLevel(targetMatchingRecord.getMannerLevel())
-            .profileImg(targetMember.getProfileImage())
-            .gameMode(targetMatchingRecord.getGameMode())
-            .mainPosition(targetMatchingRecord.getMainPosition())
-            .subPosition(targetMatchingRecord.getSubPosition())
-            .wantPosition(targetMatchingRecord.getWantPosition())
-            .mike(targetMatchingRecord.getMike())
-            .gameStyleList(profileService.getGameStyleList(targetMember))
-            .build();
+                .memberId(targetMember.getId())
+                .gameName(targetMember.getGameName())
+                .tag(targetMember.getTag())
+                .tier(targetMember.getTier())
+                .rank(targetMatchingRecord.getRank())
+                .mannerLevel(targetMatchingRecord.getMannerLevel())
+                .profileImg(targetMember.getProfileImage())
+                .gameMode(targetMatchingRecord.getGameMode())
+                .mainPosition(targetMatchingRecord.getMainPosition())
+                .subPosition(targetMatchingRecord.getSubPosition())
+                .wantPosition(targetMatchingRecord.getWantPosition())
+                .mike(targetMatchingRecord.getMike())
+                .gameStyleList(profileService.getGameStyleList(targetMember))
+                .build();
 
         return MatchingResponse.matchingFoundResponseDTO.builder()
-            .myMatchingInfo(myMatchingInfo)
-            .targetMatchingInfo(targetMatchingInfo)
-            .build();
-
+                .myMatchingInfo(myMatchingInfo)
+                .targetMatchingInfo(targetMatchingInfo)
+                .build();
     }
 
     /**
@@ -526,21 +512,22 @@ public class MatchingService {
         Member targetMember = profileService.findMember(targetMemberId);
 
         // member의 매칭 기록 상태 변경
-        MatchingRecord matchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                member, gameMode)
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        MatchingRecord matchingRecord = matchingRecordRepository
+                .findFirstByMemberAndGameModeOrderByUpdatedAtDesc(member, gameMode)
+                .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
         matchingRecord.updateStatus(MatchingStatus.SUCCESS);
         matchingRecord.updateTargetMember(targetMember);
         matchingRecord.updateMannerMessageSent(false);
 
         // targetMember의 매칭 기록 상태 변경
-        MatchingRecord targetMatchingRecord = matchingRecordRepository.findFirstByMemberAndGameModeOrderByUpdatedAtDesc(
-                targetMember, gameMode)
-            .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
+        MatchingRecord targetMatchingRecord = matchingRecordRepository
+                .findFirstByMemberAndGameModeOrderByUpdatedAtDesc(targetMember, gameMode)
+                .orElseThrow(() -> new MatchingHandler(ErrorStatus.MATCHING_NOT_FOUND));
         targetMatchingRecord.updateStatus(MatchingStatus.SUCCESS);
         targetMatchingRecord.updateTargetMember(member);
         targetMatchingRecord.updateMannerMessageSent(false);
     }
+
 }
 
 
