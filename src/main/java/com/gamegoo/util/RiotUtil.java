@@ -13,21 +13,32 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class RiotUtil {
+
     private final RestTemplate restTemplate;
+
     @Value("${spring.riot.api.key}")
     private String riotAPIKey;
 
-    private static final String RIOT_ACCOUNT_API_URL_TEMPLATE = "https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s";
-    private static final String RIOT_SUMMONER_API_URL_TEMPLATE = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/%s?api_key=%s";
-    private static final String RIOT_LEAGUE_API_URL_TEMPLATE = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/%s?api_key=%s";
-    private static final String RIOT_MATCH_API_URL_TEMPLATE = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/%s/ids?start=0&count=%s&api_key=%s";
-    private static final String RIOT_MATCH_INFO_API_URL_TEMPLATE = "https://asia.api.riotgames.com/lol/match/v5/matches/%s?api_key=%s";
+    private static final String RIOT_ACCOUNT_API_URL_TEMPLATE = "https://asia.api.riotgames" +
+            ".com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s";
+    private static final String RIOT_SUMMONER_API_URL_TEMPLATE = "https://kr.api.riotgames" +
+            ".com/lol/summoner/v4/summoners/by-puuid/%s?api_key=%s";
+    private static final String RIOT_LEAGUE_API_URL_TEMPLATE = "https://kr.api.riotgames" +
+            ".com/lol/league/v4/entries/by-summoner/%s?api_key=%s";
+    private static final String RIOT_MATCH_API_URL_TEMPLATE = "https://asia.api.riotgames" +
+            ".com/lol/match/v5/matches/by-puuid/%s/ids?start=0&count=%s&api_key=%s";
+    private static final String RIOT_MATCH_INFO_API_URL_TEMPLATE = "https://asia.api.riotgames" +
+            ".com/lol/match/v5/matches/%s?api_key=%s";
     private static final Map<String, Integer> romanToIntMap = new HashMap<>();
 
     static {
@@ -157,7 +168,8 @@ public class RiotUtil {
     public void addTierRankWinRate(Member member, String gameName, String encryptedSummonerId, String tag) {
         // account id로 티어, 랭크, 불러오기
         String leagueUrl = String.format(RIOT_LEAGUE_API_URL_TEMPLATE, encryptedSummonerId, riotAPIKey);
-        RiotResponse.RiotLeagueEntryDTO[] leagueEntries = restTemplate.getForObject(leagueUrl, RiotResponse.RiotLeagueEntryDTO[].class);
+        RiotResponse.RiotLeagueEntryDTO[] leagueEntries = restTemplate.getForObject(leagueUrl,
+                RiotResponse.RiotLeagueEntryDTO[].class);
 
         if (leagueEntries == null) {
             throw new MemberHandler(ErrorStatus.RIOT_NOT_FOUND);
@@ -181,7 +193,7 @@ public class RiotUtil {
         }
 
         if (member.getTier() == null) {
-            member.updateRiotDetails(Tier.UNRANKED,0,0.0,0);
+            member.updateRiotDetails(Tier.UNRANKED, 0, 0.0, 0);
         }
 
         // 솔랭을 하지 않는 유저는 gameName만 저장
@@ -229,7 +241,6 @@ public class RiotUtil {
                     log.info("회원가입 - 최근 선호 챔피언 값 중 id가 없는 챔피언이 있습니다.");
                     return null;
                 });
-
     }
 
 }

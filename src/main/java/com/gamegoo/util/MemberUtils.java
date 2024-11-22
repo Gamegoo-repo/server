@@ -17,7 +17,7 @@ public class MemberUtils {
     public static boolean isBlocked(Member member, Member targetMember) {
 
         return member.getBlockList().stream()
-            .anyMatch(block -> block.getBlockedMember().equals(targetMember));
+                .anyMatch(block -> block.getBlockedMember().equals(targetMember));
     }
 
     /**
@@ -27,8 +27,7 @@ public class MemberUtils {
      * @param targetMember
      * @param errorStatus
      */
-    public static void validateBlocked(Member member, Member targetMember,
-        ErrorStatus errorStatus) {
+    public static void validateBlocked(Member member, Member targetMember, ErrorStatus errorStatus) {
         for (Block block : member.getBlockList()) {
             if (block.getBlockedMember().equals(targetMember)) {
                 throw new MemberHandler(errorStatus);
@@ -55,12 +54,10 @@ public class MemberUtils {
      * @param memberId2
      * @param errorStatus
      */
-    public static void validateDifferentMembers(Long memberId1, Long memberId2,
-        ErrorStatus errorStatus) {
+    public static void validateDifferentMembers(Long memberId1, Long memberId2, ErrorStatus errorStatus) {
         if (memberId1.equals(memberId2)) {
             throw new MemberHandler(errorStatus);
         }
     }
-
 
 }

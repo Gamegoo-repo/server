@@ -28,9 +28,10 @@ public class CodeGeneratorUtil {
 
     /**
      * 비밀번호 재설정하는 랜덤 코드 생성
+     *
      * @return
      */
-    public static String generatePasswordRandomCode(){
+    public static String generatePasswordRandomCode() {
         StringBuilder code = new StringBuilder(PASSWORD_CODE_LENGTH);
 
         // 최소한 하나의 대문자, 소문자, 숫자, 특수문자를 포함하도록 함
@@ -58,4 +59,5 @@ public class CodeGeneratorUtil {
         }
         return new String(characters);
     }
+
 }
