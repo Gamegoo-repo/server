@@ -34,7 +34,8 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, JwtException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException, JwtException {
         String requestURI = request.getRequestURI();
 
         // JWT Filter를 사용하지 않는 Path는 제외
@@ -62,7 +63,8 @@ public class JWTFilter extends OncePerRequestFilter {
             CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailService.loadUserById(id);
 
             // 스프링 시큐리티 인증 토큰 생성
-            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
+                    customUserDetails.getAuthorities());
 
             // 세션에 사용자 등록
             SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -73,7 +75,6 @@ public class JWTFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             throw new JwtException(e.getMessage());
         }
-
     }
 
 }
