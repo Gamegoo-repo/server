@@ -77,7 +77,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Long id = customUserDetails.getId();
 
         // jwt 토큰 생성
-        String access_token = jwtUtil.createJwtWithId(id, 60 * 60 * 1000L);     // 1시간
+        String access_token = jwtUtil.createJwtWithId(id, 60 * 1000L);     // 1분
         String refresh_token = jwtUtil.createJwt(60 * 60 * 24 * 30 * 1000L);    // 30일
 
         Member member = memberRepository.findById(id).orElseThrow();

@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [ closed ]
   workflow_dispatch: # 수동 실행 가능
+  push:
+    branches:
+      - fix/326
 
 jobs:
   build:
