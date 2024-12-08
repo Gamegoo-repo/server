@@ -37,7 +37,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-                       MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
+            MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.memberRepository = memberRepository;
@@ -49,7 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException {
+            HttpServletResponse response) throws AuthenticationException {
         // 클라이언트 요청에서 username, password 추출
         String email = obtainUsername(request);
         String password = obtainPassword(request);
@@ -69,15 +69,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공시 실행하는 메소드 (JWT 발급)
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, FilterChain chain,
-                                            Authentication authentication) throws IOException {
+            HttpServletResponse response, FilterChain chain,
+            Authentication authentication) throws IOException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         // 사용자 id 불러오기
         Long id = customUserDetails.getId();
 
         // jwt 토큰 생성
-        String access_token = jwtUtil.createJwtWithId(id, 60 * 1000L);     // 1분
+        String access_token = jwtUtil.createJwtWithId(id, 60 * 60 * 1000L);     // 1시간
         String refresh_token = jwtUtil.createJwt(60 * 60 * 24 * 30 * 1000L);    // 30일
 
         Member member = memberRepository.findById(id).orElseThrow();
@@ -119,8 +119,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException {
+            HttpServletResponse response,
+            AuthenticationException failed) throws IOException {
         // 어떤 에러인지 확인
         ErrorStatus errorStatus = getErrorStatus(failed);
 
